@@ -12,6 +12,7 @@ import json
 import yaml
 import os
 import sys
+import time
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -134,27 +135,56 @@ def filter_relevant_documents(
     documents: list[dict],
     model: genai.GenerativeModel,
 ) -> list[dict]:
-    """安価なモデルで関連性を判定し、関連するドキュメントのみ返す"""
+    """安価なモデルで関連性をバッチ判定し、関連するドキュメントのみ返す"""
     relevant = []
     keywords = topic.get("keywords", [])
 
+    # キーワードマッチで事前フィルタ
+    candidate_docs = []
     for doc in documents:
         text = f"{doc.get('title', '')} {doc.get('content', '')}".lower()
+        if any(kw.lower() in text for kw in keywords):
+            candidate_docs.append(doc)
 
-        # まずキーワードマッチで高速フィルタ
-        if not any(kw.lower() in text for kw in keywords):
-            continue
+    print(f"    簡易キーワードフィルタ通過: {len(candidate_docs)} 件 / 初期収集: {len(documents)} 件")
 
-        # Gemini で精密判定
-        prompt = RELEVANCE_PROMPT_TEMPLATE.format(
-            topic_title=topic["title"],
-            keywords="、".join(keywords),
-            article_title=doc.get("title", ""),
-            article_url=doc.get("url", ""),
-            article_content=doc.get("content", "")[:500],
-        )
+    # バッチ処理 (1回に10件ずつまとめて判定)
+    batch_size = 10
+    for i in range(0, len(candidate_docs), batch_size):
+        batch = candidate_docs[i : i + batch_size]
+        
+        articles_text = ""
+        for idx, doc in enumerate(batch):
+            articles_text += (
+                f"--- 記事 ID: {idx} ---\n"
+                f"タイトル: {doc.get('title', '')}\n"
+                f"内容: {doc.get('content', '')[:300]}\n\n"
+            )
+
+        prompt = f"""
+あなたは政治・社会ニュースの選別アシスタントです。
+提示された「記事一覧」の中から、以下の「追跡トピック」に関連する記事のみを判定してください。
+
+【追跡トピック】
+タイトル: {topic["title"]}
+キーワード: {"、".join(keywords)}
+
+【判定基準】
+上記トピック（およびキーワード）に直接的または深く関連するニュース、出来事、法改正、議論、発言であること。単にキーワードが文章中に一言登場しただけの無関係な記事は除外してください。
+
+【記事一覧】
+{articles_text}
+
+【出力フォーマット】
+以下の構造のJSONオブジェクトのみを返してください。余計な説明文やMarkdownの装飾（```jsonなど）は一切含めないでください。
+{{
+  "relevant_ids": [判定で「関連あり」と判断された記事のID（数値）の配列]
+}}
+"""
 
         try:
+            # 1分あたり15リクエストの無料枠制限を回避するため、リクエスト間にスリープを挟む
+            time.sleep(2)
             response = model.generate_content(
                 prompt,
                 generation_config=genai.GenerationConfig(
@@ -163,13 +193,16 @@ def filter_relevant_documents(
                 ),
             )
             result = json.loads(response.text)
-            if result.get("relevant") and result.get("confidence", 0) >= 0.6:
-                relevant.append(doc)
+            relevant_ids = result.get("relevant_ids", [])
+            for r_id in relevant_ids:
+                if 0 <= r_id < len(batch):
+                    relevant.append(batch[r_id])
         except Exception as e:
-            print(f"    [RELEVANCE ERROR] {doc.get('title', '')[:40]}: {e}")
-            # エラー時はキーワードマッチのみで判断（含める）
-            relevant.append(doc)
+            print(f"    [RELEVANCE BATCH ERROR] {e}")
+            # エラー発生時は、安全のためにそのバッチすべてを「関連あり」として流す
+            relevant.extend(batch)
 
+    print(f"    AI判定による最終関連記事数: {len(relevant)} 件")
     return relevant
 
 
