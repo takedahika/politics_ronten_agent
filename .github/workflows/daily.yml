@@ -1,0 +1,83 @@
+name: 毎日の情報収集・AI分析・PR作成
+
+on:
+  schedule:
+    # 毎日 JST 8:00 (UTC 23:00) に実行
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+    # 手動実行も可能
+
+jobs:
+  collect-analyze-propose:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Python セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 依存パッケージのインストール
+        run: pip install -r scripts/requirements.txt
+
+      - name: 情報収集（collect.py）
+        env:
+          BRAVE_SEARCH_API_KEY: ${{ secrets.BRAVE_SEARCH_API_KEY }}
+        run: python scripts/collect.py
+
+      - name: AI分析・Markdown更新（analyze.py）
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/analyze.py
+
+      - name: Pull Request 作成（create_pr.py）
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python scripts/create_pr.py
+
+      - name: Discordに通知を送信
+        if: ${{ !cancelled() }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          # 分析結果を読み込む
+          if [ -f /tmp/no_changes ]; then
+            STATUS="✅ 更新なし"
+            COLOR=3092790
+            DESCRIPTION="新しい情報は見つかりませんでした。"
+          elif [ -f /tmp/analysis_results.json ]; then
+            STATUS="🤖 更新案が届いています"
+            COLOR=16766720
+            DESCRIPTION="Pull Request を確認して消込やクローズを行ってください。"
+          else
+            STATUS="⚠️ 処理エラー"
+            COLOR=16711680
+            DESCRIPTION="処理中にエラーが発生しまゆた。GitHub Actionsログを確認してください。"
+          fi
+
+          DATE=$(date '+%Y年%m月%d日 %H:%M UTC')
+          REPO_URL="https://github.com/${{ github.repository }}"
+
+          curl -s -X POST "$DISCORD_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"論点の現在地 — $STATUS\",
+                \"description\": \"$DESCRIPTION\",
+                \"color\": $COLOR,
+                \"fields\": [
+                  { \"name\": \"実行日時\", \"value\": \"$DATE\", \"inline\": true },
+                  { \"name\": \"Pull Requests\", \"value\": \"[${{ github.repository }}]($REPO_URL/pulls)\", \"inline\": true }
+                ],
+                \"footer\": { \"text\": \"論点の現在地 Bot\" }
+              }]
+            }"
