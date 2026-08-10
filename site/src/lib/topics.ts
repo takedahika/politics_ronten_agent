@@ -6,6 +6,11 @@ import html from "remark-html";
 
 const TOPICS_DIR = path.join(process.cwd(), "..", "topics");
 
+export interface NewsletterArticle {
+  url: string;
+  title: string;
+}
+
 export interface TopicConfig {
   id: string;
   title: string;
@@ -16,6 +21,7 @@ export interface TopicConfig {
   keywords: string[];
   related_countries: string[];
   created_at: string;
+  newsletter_articles?: NewsletterArticle[];
 }
 
 export interface TopicData {

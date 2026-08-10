@@ -5,8 +5,6 @@ description: 日本の国旗（日章旗）を損壊した場合の刑事罰の�
 status: active
 priority: high
 
-# テスト用に、最新ニュース（新聞RSS）に必ず含まれる「首相」「自民」を一時的にキーワードに追加します。
-# 動作確認が完了したら、これらは削除して元のキーワードのみに戻します。
 keywords:
   - 国旗損壊罪
   - 国旗損壊
@@ -14,15 +12,18 @@ keywords:
   - 国旗保護
   - 日章旗
 
-# 一旦、大量にヒットする国会議事録APIは使用せず、主要メディアのRSSのみでチェックします。
 use_shared_sources: true
 
-# 固有の追加ソース（今回はなし）
 rss_feeds_primary: []
 rss_feeds: []
 
-# 関連する国
 related_countries:
   - JP
 
 created_at: "2026-08-10"
+
+# このトピックを取り上げたニュースレター記事
+# GASによる自動検知、または手動で追記します
+newsletter_articles:
+  - url: "https://poli3year.substack.com/p/f92"
+    title: "国旗損壊罪、あるいは従順であることについて考える"

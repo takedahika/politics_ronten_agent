@@ -632,3 +632,80 @@ body {
   .topic-nav { overflow-x: auto; flex-wrap: nowrap; }
   .footer-inner { flex-direction: column; }
 }
+
+/* ==============================
+   ニュースレターCTA
+   ============================== */
+
+.newsletter-cta {
+  margin: 2rem 0 3rem;
+}
+
+.newsletter-cta-inner {
+  padding: 2rem 2.5rem;
+  background: linear-gradient(135deg, rgba(168, 125, 78, 0.08) 0%, rgba(168, 125, 78, 0.03) 100%);
+  border: 1px solid rgba(168, 125, 78, 0.3);
+  border-left: 3px solid var(--gold);
+  border-radius: 2px;
+}
+
+.newsletter-cta-eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-family: var(--font-mono);
+  margin-bottom: 0.75rem;
+}
+
+.newsletter-cta-body {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.9;
+  margin-bottom: 1.25rem;
+}
+
+.newsletter-cta-body strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.newsletter-cta-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.newsletter-cta-link {
+  font-size: 0.875rem;
+  color: var(--gold-light);
+  text-decoration: none;
+  line-height: 1.6;
+  transition: color 0.2s;
+}
+
+.newsletter-cta-link:hover {
+  color: var(--text-primary);
+}
+
+.newsletter-cta-subscribe {
+  display: inline-block;
+  padding: 0.55rem 1.25rem;
+  background: var(--gold-dim);
+  border: 1px solid rgba(168, 125, 78, 0.4);
+  color: var(--gold-light);
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  border-radius: 1px;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.newsletter-cta-subscribe:hover {
+  background: rgba(168, 125, 78, 0.2);
+  color: var(--text-primary);
+  border-color: rgba(168, 125, 78, 0.7);
+}
+
