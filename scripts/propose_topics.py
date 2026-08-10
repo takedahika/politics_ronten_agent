@@ -272,13 +272,26 @@ def main():
     # RSSフィードの取得
     print(f"ニュースレターRSSを取得中: {rss_url}")
     try:
-        feed = feedparser.parse(rss_url)
+        # User-Agent をブラウザ風に偽装して Cloudflare ブロックを回避
+        feed = feedparser.parse(
+            rss_url,
+            agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
     except Exception as e:
         print(f"RSS取得失敗: {e}")
         return
 
+    # HTTPステータスのチェック
+    status = getattr(feed, "status", None)
+    if status and status != 200:
+        print(f"RSS取得エラー: HTTPステータス {status} が返されました。")
+        if status == 403:
+            print("警告: SubstackのCloudflare等によってアクセスが拒否（403）されました。")
+
     if not feed.entries:
         print("エッセイが見つかりませんでした。")
+        if hasattr(feed, "bozo") and feed.bozo:
+            print(f"パース例外: {feed.bozo_exception}")
         return
 
     latest_essay = feed.entries[0]
