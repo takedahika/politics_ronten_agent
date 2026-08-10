@@ -1,3 +1,5 @@
+const isProd = process.env.NODE_ENV === 'production';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
@@ -5,6 +7,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // GitHub Pagesでサブフォルダにデプロイされるための設定
+  basePath: isProd ? "/politics_ronten_agent" : "",
 };
 
 module.exports = nextConfig;
