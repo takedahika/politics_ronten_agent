@@ -1,0 +1,55 @@
+name: サイトのデプロイ
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "topics/**"
+      - "newsletter/**"
+      - "site/**"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.js セットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: site/package-lock.json
+
+      - name: 依存パッケージのインストール
+        working-directory: site
+        run: npm ci
+
+      - name: サイトのビルド
+        working-directory: site
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
+
+      - name: GitHub Pages の設定
+        uses: actions/configure-pages@v4
+
+      - name: アーティファクトのアップロード
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/out
+
+      - name: デプロイ
+        id: deployment
+        uses: actions/deploy-pages@v4

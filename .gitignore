@@ -1,0 +1,29 @@
+# Node.js
+node_modules/
+.npm
+
+# Next.js
+site/.next/
+site/out/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# 環境変数（絶対にコミットしない）
+.env
+.env.local
+.env.*.local
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# 一時ファイル
+/tmp/
