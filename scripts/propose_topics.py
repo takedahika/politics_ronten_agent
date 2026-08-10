@@ -272,32 +272,33 @@ def main():
     # RSSフィードの取得
     print(f"ニュースレターRSSを取得中: {rss_url}")
     try:
-        # User-Agent をブラウザ風に偽装して Cloudflare ブロックを回避
-        feed = feedparser.parse(
-            rss_url,
-            agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        )
+        import urllib.parse
+        encoded_url = urllib.parse.quote_plus(rss_url)
+        # Cloudflareブロックを回避するため、無料公開のRSS2JSON中継APIを使用
+        proxy_url = f"https://api.rss2json.com/v1/api.json?rss_url={encoded_url}"
+        
+        resp = httpx.get(proxy_url, timeout=25)
+        resp.raise_for_status()
+        feed_data = resp.json()
+        
+        if feed_data.get("status") != "ok":
+            print(f"RSSプロキシエラー: {feed_data.get('message', '不明なエラー')}")
+            return
+            
+        items = feed_data.get("items", [])
     except Exception as e:
-        print(f"RSS取得失敗: {e}")
+        print(f"RSS取得失敗 (プロキシ経由): {e}")
         return
 
-    # HTTPステータスのチェック
-    status = getattr(feed, "status", None)
-    if status and status != 200:
-        print(f"RSS取得エラー: HTTPステータス {status} が返されました。")
-        if status == 403:
-            print("警告: SubstackのCloudflare等によってアクセスが拒否（403）されました。")
-
-    if not feed.entries:
+    if not items:
         print("エッセイが見つかりませんでした。")
-        if hasattr(feed, "bozo") and feed.bozo:
-            print(f"パース例外: {feed.bozo_exception}")
         return
 
-    latest_essay = feed.entries[0]
-    essay_title = latest_essay.title
-    essay_url = latest_essay.link
-    essay_content = latest_essay.description  # 本文またはサマリー
+    latest_essay = items[0]
+    essay_title = latest_essay.get("title", "")
+    essay_url = latest_essay.get("link", "")
+    # 本文またはサマリー
+    essay_content = latest_essay.get("content", latest_essay.get("description", ""))
     if not essay_content and "content" in latest_essay:
         essay_content = latest_essay.content[0].value
 
