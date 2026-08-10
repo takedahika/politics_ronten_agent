@@ -169,6 +169,10 @@ def main() -> None:
 
     print(f"\n✅ PR を作成しました: {pr.html_url}")
 
+    # Discord通知用にPRの情報を保存
+    with open("/tmp/pr_info.json", "w", encoding="utf-8") as f:
+        json.dump({"title": pr_title, "url": pr.html_url}, f, ensure_ascii=False)
+
 
 if __name__ == "__main__":
     main()
