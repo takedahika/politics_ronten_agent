@@ -5,93 +5,24 @@ description: 日本の国旗（日章旗）を損壊した場合の刑事罰の�
 status: active
 priority: high
 
-# 検索キーワード
+# テスト用に、最新ニュース（新聞RSS）に必ず含まれる「首相」「自民」を一時的にキーワードに追加します。
+# 動作確認が完了したら、これらは削除して元のキーワードのみに戻します。
 keywords:
   - 国旗損壊罪
   - 国旗損壊
   - 日の丸
-  - 国旗保護
-  - 日章旗
+  - 首相
+  - 自民
 
-# 検索クエリ（日本語）
-search_queries_ja:
-  - "国旗損壊罪 法案"
-  - "国旗損壊 刑法 改正"
-  - "日章旗 損壊 厳罰"
-  - "国旗 表現の自由"
+# 一旦、大量にヒットする国会議事録APIは使用せず、主要メディアのRSSのみでチェックします。
+use_shared_sources: true
 
-# 検索クエリ（英語）
-search_queries_en:
-  - "Japan flag desecration law"
-  - "Japanese flag protection bill"
-  - "Hinomaru flag law Japan"
-
-# ── Tier 1: 一次資料 ──────────────────────────────────
-
-# 国会（議事録・委員会記録）
-rss_feeds_primary:
-  # 国会図書館 国会議事録検索システム（キーワード検索URLから生成）
-  # ※ APIキーが必要な場合は scripts/collect.py 内で直接呼び出す
-  - type: ndl_api
-    keyword: "国旗損壊"
-
-  # 衆議院
-  - type: rss
-    url: https://www.shugiin.go.jp/internet/itdb_rss.nsf/html/rss/news.rss
-    name: 衆議院 新着情報
-
-  # 参議院
-  - type: rss
-    url: https://www.sangiin.go.jp/japanese/annai/rss/news.rss
-    name: 参議院 新着情報
-
-  # 首相官邸
-  - type: rss
-    url: https://www.kantei.go.jp/jp/rss/kanteinews.rdf
-    name: 首相官邸
-
-  # e-Gov 法令
-  - type: manual
-    note: "e-Gov 法令検索 - 検索キーワード: 国旗損壊"
-    url: https://laws.e-gov.go.jp
-
-# ── Tier 2: 主要メディア ──────────────────────────────
-
-rss_feeds:
-  # NHK 政治
-  - https://www3.nhk.or.jp/rss/news/cat4.xml
-  # 時事通信 政治
-  - https://www.jiji.com/rss/pol.rss
-  # 共同通信
-  - https://www.47news.jp/rss/politics.xml
-  # 朝日新聞
-  - https://www.asahi.com/rss/asahi/newsheadlines.rdf
-  # 毎日新聞
-  - https://mainichi.jp/rss/etc/mainichi-flash.rss
-  # 読売新聞
-  - https://www.yomiuri.co.jp/rss/media_atom.xml
-  # 産経新聞
-  - https://www.sankei.com/rss/politics.xml
-
-  # ── Tier 2: 海外メディア ─────────────────────────
-  # Reuters Japan
-  - https://jp.reuters.com/tools/rss
-  # BBC Japan
-  - https://feeds.bbci.co.uk/japanese/rss.xml
+# 固有の追加ソース（今回はなし）
+rss_feeds_primary: []
+rss_feeds: []
 
 # 関連する国
 related_countries:
-  - US
-  - DE
-  - KR
-  - FR
-  - RU
-
-# 関連する組織
-related_organizations:
-  - 自由民主党
-  - 日本共産党
-  - 立憲民主党
-  - 日本弁護士連合会
+  - JP
 
 created_at: "2026-08-10"
