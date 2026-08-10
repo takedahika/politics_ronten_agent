@@ -1,0 +1,14 @@
+# 論点の現在地 — ニュースレター（Substack等）の自動解析設定
+
+# あなたが配信しているSubstackのRSSフィードを指定します。
+# AIがこのRSSから最新エッセイを読み込み、新しい論点（Topic）を自動で抽出して
+# プルリクエスト（更新提案）を作成します。
+
+# SubstackのRSSフィードURL
+# 例: https://takedahika.substack.com/feed （実在するURLに書き換えてください）
+newsletter_rss_url: "https://takedahika.substack.com/feed"
+
+# AIがエッセイを分析する際の設定
+analysis:
+  model: "gemini-3.5-flash"
+  max_topics_per_essay: 2 # 1つのエッセイから抽出する最大トピック数
