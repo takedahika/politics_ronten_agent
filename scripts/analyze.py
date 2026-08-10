@@ -20,8 +20,8 @@ from datetime import datetime, timezone
 # Gemini 設定
 # ==============================
 
-RELEVANCE_MODEL = "gemini-2.0-flash"
-EXTRACTION_MODEL = "gemini-2.0-flash"
+RELEVANCE_MODEL = "gemini-1.5-flash"
+EXTRACTION_MODEL = "gemini-1.5-flash"
 
 RELEVANCE_PROMPT_TEMPLATE = """
 あなたは政治・社会問題のリサーチアシスタントです。
