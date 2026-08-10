@@ -282,7 +282,7 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
             source_text = _source_link(source_url, source_name) if source_url else "*(出典URL不明)*"
 
             entry = (
-                f"### {event.get('date', '日付不明')}"\n                f" — {event.get('title', '')}\n\n"
+                f"### {event.get('date', '日付不明')} — {event.get('title', '')}\n\n"
                 f"{event.get('description', '')}\n\n"
                 f"> 出典: {source_text}\n"
             )
