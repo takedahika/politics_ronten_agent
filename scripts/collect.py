@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 collect.py
 ----------
@@ -95,13 +97,17 @@ def fetch_rss(url: str, max_age_days: int = 7) -> list[dict]:
 # 国会議事録検索 API（国立国会図書館）
 # ==============================
 
-def fetch_kokkai_records(keyword: str, max_records: int = 10) -> list[dict]:
+def fetch_kokkai_records(keyword: str, max_records: int = 10, days_back: int = 14) -> list[dict]:
     """
     国会議事録検索システム API でキーワード検索する。
     API doc: https://kokkai.ndl.go.jp/api.html
     認証不要・無料。
     """
     try:
+        from datetime import datetime, timedelta
+        # 過去 N 日間の発言のみに絞る（過負荷防止・重複収集防止）
+        start_date = (datetime.now() - timedelta(days=days_back)).strftime("%Y-%m-%d")
+
         resp = httpx.get(
             "https://kokkai.ndl.go.jp/api/speech",
             params={
@@ -109,6 +115,7 @@ def fetch_kokkai_records(keyword: str, max_records: int = 10) -> list[dict]:
                 "recordPacking": "json",
                 "maximumRecords": max_records,
                 "startRecord": 1,
+                "from": start_date,
             },
             timeout=20,
         )

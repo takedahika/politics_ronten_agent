@@ -28,12 +28,6 @@ jobs:
       - name: 依存パッケージのインストール
         run: pip install -r scripts/requirements.txt
 
-      - name: Substackエッセイからの新規トピック提案（propose_topics.py）
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python scripts/propose_topics.py
 
       - name: 情報収集（collect.py）
         env:

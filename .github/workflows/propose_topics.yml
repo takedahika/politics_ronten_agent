@@ -1,0 +1,82 @@
+name: 新規論点の自動提案（Substack解析）
+
+on:
+  workflow_dispatch: # GitHub上で手動でいつでも実行可能
+  schedule:
+    # 毎週月曜日と木曜日の午前 9:00 UTC (日本時間 18:00) に定期実行
+    - cron: "0 9 * * 1,4"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  propose-new-topics:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Python セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 依存パッケージのインストール
+        run: pip install -r scripts/requirements.txt
+
+      - name: Substackエッセイからの新規トピック提案（propose_topics.py）
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python scripts/propose_topics.py
+
+      - name: Discordに通知を送信
+        if: ${{ !cancelled() }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          # 提案結果が存在するかを判定
+          if [ -f /tmp/pr_info.json ]; then
+            STATUS="💡 新しい論点が提案されました"
+            COLOR=16766720
+            PR_TITLE=$(jq -r '.title' /tmp/pr_info.json)
+            PR_URL=$(jq -r '.url' /tmp/pr_info.json)
+            DESCRIPTION="あなたのSubstack最新記事から、新しい論点（トピック）の候補を検出しました！\n\n**提案内容:**\n[$PR_TITLE]($PR_URL)\n\nこの論点の追跡を開始する場合は、GitHub上でマージ（承認）を行ってください。"
+          else
+            STATUS="✅ 新規提案なし"
+            COLOR=3092790
+            DESCRIPTION="最新エッセイから、新しい論点の提案はありませんでした（すでに追跡中、または該当なし）。"
+          fi
+
+          DATE=$(date '+%Y年%m月%d日 %H:%M UTC')
+          REPO_URL="https://github.com/${{ github.repository }}"
+
+          curl -s -X POST "$DISCORD_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"論点の現在地 — $STATUS\",
+                \"description\": \"$DESCRIPTION\",
+                \"color\": $COLOR,
+                \"fields\": [
+                  {
+                    \"name\": \"実行環境\",
+                    \"value\": \"GitHub Actions (propose_topics.yml)\",
+                    \"inline\": true
+                  },
+                  {
+                    \"name\": \"実行日時\",
+                    \"value\": \"$DATE\",
+                    \"inline\": true
+                  }
+                ],
+                \"footer\": {
+                  \"text\": \"論点の現在地 Bot\"
+                }
+              }]
+            }"
