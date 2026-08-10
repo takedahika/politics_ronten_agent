@@ -61,6 +61,12 @@ jobs:
             STATUS="✅ 更新なし"
             COLOR=3092790
             DESCRIPTION="新しい情報は見つかりませんでした。"
+          elif [ -f /tmp/pr_info.json ]; then
+            STATUS="🤖 更新案が届いています"
+            COLOR=16766720
+            PR_TITLE=$(jq -r '.title' /tmp/pr_info.json)
+            PR_URL=$(jq -r '.url' /tmp/pr_info.json)
+            DESCRIPTION="新しい更新提案が届きました！\n\n**PR件名:**\n[$PR_TITLE]($PR_URL)\n\nGitHub上で内容を確認し、マージまたはクローズを行ってください。"
           elif [ -f /tmp/analysis_results.json ]; then
             STATUS="🤖 更新案が届いています"
             COLOR=16766720
@@ -68,7 +74,7 @@ jobs:
           else
             STATUS="⚠️ 処理エラー"
             COLOR=16711680
-            DESCRIPTION="処理中にエラーが発生しまゆた。GitHub Actionsログを確認してください。"
+            DESCRIPTION="処理中にエラーが発生しました。GitHub Actionsログを確認してください。"
           fi
 
           DATE=$(date '+%Y年%m月%d日 %H:%M UTC')

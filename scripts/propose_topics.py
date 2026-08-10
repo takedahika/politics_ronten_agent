@@ -235,6 +235,11 @@ def propose_via_github(topic_dir: Path, topic_title: str, essay_title: str) -> b
             base="main"
         )
         print(f"✅ Pull Request を作成しました: {pr.html_url}")
+
+        # Discord通知用にPRの情報を保存
+        with open("/tmp/pr_info.json", "w", encoding="utf-8") as f:
+            json.dump({"title": pr_title, "url": pr.html_url}, f, ensure_ascii=False)
+
         return True
     except Exception as e:
         print(f"PR作成エラー: {e}")
