@@ -204,8 +204,28 @@ def collect_for_topic(topic: dict, brave_key: str | None) -> list[dict]:
             for item in fetch_kokkai_records(kw):
                 add_doc(item)
 
-    # ── Tier 2: RSS フィード ──────────────────
-    for rss_url in topic.get("rss_feeds", []):
+    # ── Tier 2: RSS フィード（共通ソース + 固有ソース） ──
+    rss_list = []
+    # デフォルトで共通ソースを使用（明示的にFalseにされていない限り）
+    if topic.get("use_shared_sources", True):
+        shared_path = Path(__file__).parent.parent / "config" / "shared_sources.yaml"
+        if shared_path.exists():
+            try:
+                import yaml
+                with open(shared_path, encoding="utf-8") as f:
+                    shared_data = yaml.safe_load(f)
+                for item in shared_data.get("shared_rss_feeds", {}).values():
+                    url = item.get("url")
+                    if url:
+                        rss_list.append(url)
+            except Exception as e:
+                print(f"    [WARNING] shared_sources.yaml 読み込み失敗: {e}")
+
+    # 個別Topic固有のRSS
+    rss_list.extend(topic.get("rss_feeds", []))
+
+    # 重複URLを排除して巡回
+    for rss_url in set(rss_list):
         print(f"    RSS: {rss_url}")
         for item in fetch_rss(rss_url):
             add_doc(item)

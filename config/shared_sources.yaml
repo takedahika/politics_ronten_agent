@@ -1,0 +1,39 @@
+# 論点の現在地 — 共通情報源（RSS）の定義ファイル
+
+# 大手メディア・通信社などの汎用的なニュースソースです。
+# 各 Topic の個別設定で "use_shared_sources: true" にすると、
+# ここに定義されたすべてのRSSフィードが自動で巡回対象になります。
+
+shared_rss_feeds:
+  # 通信・公共放送
+  nhk_politics:
+    name: "NHKニュース 政治"
+    url: "https://www3.nhk.or.jp/rss/news/cat4.xml"
+  jiji_politics:
+    name: "時事通信 政治"
+    url: "https://www.jiji.com/rss/pol.rss"
+  kyodo_politics:
+    name: "共同通信"
+    url: "https://www.47news.jp/rss/politics.xml"
+
+  # 大手新聞社
+  asahi_politics:
+    name: "朝日新聞 政治"
+    url: "https://www.asahi.com/rss/asahi/newsheadlines.rdf"
+  mainichi_flash:
+    name: "毎日新聞 速報"
+    url: "https://mainichi.jp/rss/etc/mainichi-flash.rss"
+  yomiuri_politics:
+    name: "読売新聞"
+    url: "https://www.yomiuri.co.jp/rss/media_atom.xml"
+  sankei_politics:
+    name: "産経新聞 政治"
+    url: "https://www.sankei.com/rss/politics.xml"
+
+  # 海外メディア（日本語版）
+  reuters_japan:
+    name: "ロイター 日本語"
+    url: "https://jp.reuters.com/tools/rss"
+  bbc_japan:
+    name: "BBC ニュース日本"
+    url: "https://feeds.bbci.co.uk/japanese/rss.xml"
