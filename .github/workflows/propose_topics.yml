@@ -1,10 +1,12 @@
 name: 新規論点の自動提案（Substack解析）
 
 on:
-  workflow_dispatch: # GitHub上で手動でいつでも実行可能
-  schedule:
-    # 毎週月曜日と木曜日の午前 9:00 UTC (日本時間 18:00) に定期実行
-    - cron: "0 9 * * 1,4"
+  workflow_dispatch:
+    inputs:
+      article_url:
+        description: "解析するSubstackの記事URL（空欄の場合はGASから渡された本文を使用）"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -33,6 +35,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          ARTICLE_URL: ${{ github.event.inputs.article_url }}
         run: python scripts/propose_topics.py
 
       - name: Discordに通知を送信
