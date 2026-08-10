@@ -258,10 +258,6 @@ def propose_via_github(topic_dir: Path, topic_title: str, essay_title: str) -> b
 
 def main():
     config = load_config()
-    rss_url = config.get("newsletter_rss_url")
-    if not rss_url:
-        print("ニュースレターの RSS URL が設定されていません。")
-        return
 
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if not gemini_key:
@@ -269,44 +265,60 @@ def main():
         return
     genai.configure(api_key=gemini_key)
 
-    # RSSフィードの取得
-    print(f"ニュースレターRSSを取得中: {rss_url}")
-    try:
-        import urllib.parse
-        encoded_url = urllib.parse.quote_plus(rss_url)
-        # Cloudflareブロックを回避するため、無料公開のRSS2JSON中継APIを使用
-        proxy_url = f"https://api.rss2json.com/v1/api.json?rss_url={encoded_url}"
-        
-        resp = httpx.get(proxy_url, timeout=25)
-        resp.raise_for_status()
-        feed_data = resp.json()
-        
-        if feed_data.get("status") != "ok":
-            print(f"RSSプロキシエラー: {feed_data.get('message', '不明なエラー')}")
+    essay_title: str = ""
+    essay_url: str = ""
+    essay_content: str = ""
+
+    # ==============================
+    # 入力ソースの判定（優先順位順）
+    # ==============================
+
+    article_url = os.environ.get("ARTICLE_URL", "").strip()
+    article_content = os.environ.get("ARTICLE_CONTENT", "").strip()  # GASから直接本文を渡す用
+
+    if article_url:
+        # 【手動実行 or GAS経由】記事URLが渡された場合 → 直接フェッチ
+        print(f"記事URLから本文を取得中: {article_url}")
+        try:
+            import re
+            resp = httpx.get(article_url, timeout=20, follow_redirects=True,
+                             headers={"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)"})
+            resp.raise_for_status()
+            # HTMLから本文っぽいテキストを雑に抜き出す
+            html = resp.text
+            # scriptタグ・styleタグを除去してテキスト化
+            text = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", html, flags=re.DOTALL)
+            text = re.sub(r"<[^>]+>", " ", text)
+            text = re.sub(r"\s+", " ", text).strip()
+            essay_url = article_url
+            essay_content = text[:6000]
+            # タイトルをHTMLのtitleタグから取得
+            title_match = re.search(r"<title[^>]*>(.*?)</title>", html, re.IGNORECASE | re.DOTALL)
+            essay_title = title_match.group(1).strip() if title_match else article_url
+            print(f"取得成功: 「{essay_title}」")
+        except Exception as e:
+            print(f"URL取得失敗: {e}")
             return
-            
-        items = feed_data.get("items", [])
-    except Exception as e:
-        print(f"RSS取得失敗 (プロキシ経由): {e}")
-        return
 
-    if not items:
-        print("エッセイが見つかりませんでした。")
-        return
+    elif article_content:
+        # 【GAS経由・本文直接渡し】メール本文がそのまま渡された場合
+        print("GASから渡されたメール本文を使用します。")
+        article_title_line = os.environ.get("ARTICLE_TITLE", "").strip()
+        essay_title = article_title_line or "（タイトル不明）"
+        essay_url = os.environ.get("ARTICLE_ORIGINAL_URL", "").strip() or f"substack-email-{hashlib.md5(article_content[:100].encode()).hexdigest()}"
+        essay_content = article_content[:6000]
 
-    latest_essay = items[0]
-    essay_title = latest_essay.get("title", "")
-    essay_url = latest_essay.get("link", "")
-    # 本文またはサマリー
-    essay_content = latest_essay.get("content", latest_essay.get("description", ""))
-    if not essay_content and "content" in latest_essay:
-        essay_content = latest_essay.content[0].value
+    else:
+        print("処理する記事が指定されていません。")
+        print("  - 手動実行: GitHub Actions の 'Run workflow' でARTICLE_URLを入力してください")
+        print("  - 自動実行: GASからARTICLE_CONTENTを渡してください")
+        return
 
     essay_hash = hashlib.md5(essay_url.encode("utf-8")).hexdigest()
     processed_essays = load_processed_essays()
 
     if essay_hash in processed_essays:
-        print(f"最新エッセイ 「{essay_title}」 はすでに処理済みです。")
+        print(f"エッセイ 「{essay_title}」 はすでに処理済みです。")
         return
 
     print(f"最新のエッセイを分析中: 「{essay_title}」")
