@@ -549,15 +549,15 @@ keywords:
   - キーワード1
   - キーワード2
 
-search_queries_ja:
-  - "Google等で検索したいクエリ1"
-  - "クエリ2"
+# ── 一次資料（国会図書館APIなど）のみ指定
+rss_feeds_primary:
+  - type: ndl_api
+    keyword: "国会で検索したいキーワード"
 
-search_queries_en:
-  - "English query"
-
-rss_feeds:
-  - https://www3.nhk.or.jp/rss/news/cat4.xml
+# ── 共通ニュースソースは自動的にすべてロードされます ──
+# (NHK, 朝日, 毎日, 読売, 産経, 共同, 時事, ロイター, BBC 等)
+# 固有の追加ニュースソースがある場合のみ以下にURLを記述します。
+rss_feeds: []
 
 related_countries:
   - JP
@@ -582,6 +582,7 @@ AIが情報を書き込むための空ファイルを作成します。Step 1と
 > 翌朝8時（または手動実行時）になると、AIが自動的にニュースを収集し、これらの空ファイルにコンテンツを書き込んで Pull Request として提案してくれます。
 
 main ブランチにコミットすれば、翌朝から自動収集が始まります。
+
 
 ---
 
