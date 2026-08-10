@@ -11,6 +11,7 @@ import json
 import yaml
 import os
 import hashlib
+import time
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from dateutil import parser as dateutil_parser
@@ -229,6 +230,8 @@ def collect_for_topic(topic: dict, brave_key: str | None) -> list[dict]:
         print(f"    RSS: {rss_url}")
         for item in fetch_rss(rss_url):
             add_doc(item)
+        # 連続アクセスを防ぐために1秒スリープ
+        time.sleep(1)
 
     # ── Tier 2-3: Web 検索 ────────────────────
     if brave_key:

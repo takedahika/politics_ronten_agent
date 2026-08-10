@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 # ==============================
 
 RELEVANCE_MODEL = "gemini-2.0-flash"
-EXTRACTION_MODEL = "gemini-2.5-flash"
+EXTRACTION_MODEL = "gemini-2.0-flash"
 
 RELEVANCE_PROMPT_TEMPLATE = """
 あなたは政治・社会問題のリサーチアシスタントです。
@@ -139,14 +139,24 @@ def filter_relevant_documents(
     relevant = []
     keywords = topic.get("keywords", [])
 
-    # キーワードマッチで事前フィルタ
+    # 厳格なローカルキーワードマッチで事前フィルタ
     candidate_docs = []
     for doc in documents:
-        text = f"{doc.get('title', '')} {doc.get('content', '')}".lower()
-        if any(kw.lower() in text for kw in keywords):
+        title = doc.get('title', '').lower()
+        content = doc.get('content', '').lower()
+        full_text = f"{title} {content}"
+        
+        # 1. タイトルに直接キーワードが含まれているか
+        title_match = any(kw.lower() in title for kw in keywords)
+        
+        # 2. 本文中にキーワードがどれだけ登場するか（出現頻度）
+        keyword_count = sum(full_text.count(kw.lower()) for kw in keywords)
+        
+        # タイトルに含まれている、または本文中に2回以上キーワードが登場する場合のみ候補とする
+        if title_match or keyword_count >= 2:
             candidate_docs.append(doc)
 
-    print(f"    簡易キーワードフィルタ通過: {len(candidate_docs)} 件 / 初期収集: {len(documents)} 件")
+    print(f"    [ローカルフィルタ] 厳格キーワード選定後: {len(candidate_docs)} 件 / 初期収集: {len(documents)} 件")
 
     # バッチ処理 (1回に10件ずつまとめて判定)
     batch_size = 10
