@@ -58,48 +58,45 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
+          STATUS="✅ 新規提案なし"
+          COLOR=3092790
+          DESCRIPTION="最新エッセイから、新しい論点の提案はありませんでした（すでに追跡中、または該当なし）。"
+
           if [ -f /tmp/error_info.json ]; then
             STATUS="❌ AI・処理エラー"
             COLOR=16711680
             ERR_MSG=$(jq -r '.error' /tmp/error_info.json)
-            DESCRIPTION="処理中にエラーが発生しました。\n\n**エラー詳細:**\n\`\`\`\n$ERR_MSG\n\`\`\`"
+            DESCRIPTION="処理中にエラーが発生しました。\n\n**エラー詳細:**\n$ERR_MSG"
           elif [ -f /tmp/pr_info.json ]; then
             STATUS="💡 新しい論点が提案されました"
             COLOR=16766720
             PR_TITLE=$(jq -r '.title' /tmp/pr_info.json)
             PR_URL=$(jq -r '.url' /tmp/pr_info.json)
             DESCRIPTION="あなたのSubstack最新記事から、新しい論点（トピック）の候補を検出しました！\n\n**提案内容:**\n[$PR_TITLE]($PR_URL)\n\nこの論点の追跡を開始する場合は、GitHub上でマージ（承認）を行ってください。"
-          else
-            STATUS="✅ 新規提案なし"
-            COLOR=3092790
-            DESCRIPTION="最新エッセイから、新しい論点の提案はありませんでした（すでに追跡中、または該当なし）。"
           fi
 
-
           DATE=$(date '+%Y年%m月%d日 %H:%M UTC')
-          REPO_URL="https://github.com/${{ github.repository }}"
+
+          # jq を使って安全にエスケープされた JSON を生成
+          PAYLOAD=$(jq -n \
+            --arg status "$STATUS" \
+            --arg desc "$DESCRIPTION" \
+            --arg date "$DATE" \
+            --argjson color "$COLOR" \
+            '{
+              embeds: [{
+                title: ("論点の現在地 — " + $status),
+                description: $desc,
+                color: $color,
+                fields: [
+                  { name: "実行環境", value: "GitHub Actions (propose_topics.yml)", inline: true },
+                  { name: "実行日時", value: $date, inline: true }
+                ],
+                footer: { text: "論点の現在地 Bot" }
+              }]
+            }')
 
           curl -s -X POST "$DISCORD_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
-            -d "{
-              \"embeds\": [{
-                \"title\": \"論点の現在地 — $STATUS\",
-                \"description\": \"$DESCRIPTION\",
-                \"color\": $COLOR,
-                \"fields\": [
-                  {
-                    \"name\": \"実行環境\",
-                    \"value\": \"GitHub Actions (propose_topics.yml)\",
-                    \"inline\": true
-                  },
-                  {
-                    \"name\": \"実行日時\",
-                    \"value\": \"$DATE\",
-                    \"inline\": true
-                  }
-                ],
-                \"footer\": {
-                  \"text\": \"論点の現在地 Bot\"
-                }
-              }]
-            }"
+            -d "$PAYLOAD"
+
