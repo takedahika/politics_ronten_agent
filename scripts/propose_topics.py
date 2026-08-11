@@ -154,7 +154,8 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
 
 """
     # Google Search Groundingツールを有効化
-    model = genai.GenerativeModel(model_name, tools="google_search_retrieval")
+    tool = genai.protos.Tool(google_search=genai.protos.Tool.GoogleSearch())
+    model = genai.GenerativeModel(model_name, tools=[tool])
     try:
         response = model.generate_content(
             prompt,
@@ -168,7 +169,7 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
         raise RuntimeError(
             f"Google Search Groundingを使用した初期コンテンツ生成に失敗しました。\n"
             f"原因: {e}\n"
-            f"※注意: Google Search Grounding機能（Google検索連携）はGemini APIの【有料ティア（従量課金設定）】のAPIキーでのみ利用可能です。無料ティアのキーでは動作しません。有料設定にするか、検索を伴わない元のモデル構成に戻す必要があります。"
+            f"※APIキーの権限設定、またはモデル名（{model_name}）がGoogle Search Groundingに対応しているか確認してください。"
         ) from e
 
 
