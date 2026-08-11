@@ -1,0 +1,19 @@
+id: sns-contact-privacy
+title: SNS・プラットフォームにおける連絡先同期とプライバシー保護
+slug: sns-contact-privacy
+description: SNSや情報配信プラットフォームが提供する「友達検索」機能等において、ユーザーの連絡先データや個人情報がどのように収集・利用されるべきか、プライバシー保護と個人情報保護法の観点からの議論。
+status: active
+priority: normal
+keywords:
+- 個人情報保護
+- プライバシー
+- 連絡先同期
+- プラットフォーム規制
+use_shared_sources: true
+rss_feeds_primary:
+- type: ndl_api
+  keyword: 個人情報保護
+rss_feeds: []
+related_countries:
+- JP
+created_at: '2026-08-11'
