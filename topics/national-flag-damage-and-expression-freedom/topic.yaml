@@ -1,0 +1,22 @@
+id: national-flag-damage-and-expression-freedom
+title: 国旗損壊罪の創設と表現の自由
+slug: national-flag-damage-and-expression-freedom
+description: 2026年7月に成立した「国旗の損壊等の処罰に関する法律」を巡る対立。自民党、日本維新の会、国民民主党、参政党の4党が共同提案し、国旗を大切に思う国民感情の保護や愛国心の醸成を目的とする。これに対し、立憲民主党や共産党、日弁連、憲法学者らは、国旗を用いた抗議活動も憲法21条が保障する表現の自由や19条の思想・良心の自由に含まれるとし、刑罰による規制は違憲であると強く反発している。
+status: active
+priority: normal
+keywords:
+- 国旗損壊罪
+- 国旗の損壊等の処罰に関する法律
+- 表現の自由
+- 内心の自由
+use_shared_sources: true
+rss_feeds_primary:
+- type: ndl_api
+  keyword: 国旗の損壊等の処罰に関する法律案
+rss_feeds: []
+related_countries:
+- JP
+created_at: '2026-08-11'
+newsletter_articles:
+- title: 国旗損壊罪、あるいは従順であることについて考える
+  url: https://poli3year.substack.com/p/754
