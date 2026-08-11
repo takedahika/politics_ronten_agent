@@ -154,39 +154,89 @@ def fetch_kokkai_records(keyword: str, max_records: int = 10, days_back: int = 3
 
 
 # ==============================
-# Web 検索（Brave Search API）
+# Web 検索（Gemini Google Search Grounding）
 # ==============================
 
-def search_brave(query: str, api_key: str, count: int = 10) -> list[dict]:
-    """Brave Search API でウェブ検索する"""
+def search_via_gemini_grounding(topic_title: str, keywords: list[str], model_name: str = "gemini-3.5-flash") -> list[dict]:
+    """GeminiのGoogle Search Groundingを使って、主要新聞社のサイトから最新情報を検索する"""
     try:
-        resp = httpx.get(
-            "https://api.search.brave.com/res/v1/web/search",
-            params={"q": query, "count": count, "country": "JP", "search_lang": "ja"},
-            headers={
-                "Accept": "application/json",
-                "X-Subscription-Token": api_key,
-            },
-            timeout=15,
+        import google.generativeai as genai
+    except ImportError:
+        print("  [ERROR] google-generativeai がインストールされていません")
+        return []
+
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        print("  [WARNING] GEMINI_API_KEY が設定されていないため、Gemini検索をスキップします")
+        return []
+
+    genai.configure(api_key=api_key)
+
+    # 検索対象ドメインを主要新聞社に限定
+    domains = [
+        "site:asahi.com",
+        "site:yomiuri.co.jp",
+        "site:nikkei.com",
+        "site:mainichi.jp",
+        "site:nhk.or.jp",
+        "site:sankei.com",
+        "site:47news.jp"
+    ]
+    domain_query = " OR ".join(domains)
+
+    prompt = f"""あなたは政治・社会問題のニュースを収集する有能なリサーチアシスタントです。
+
+テーマ「{topic_title}」（キーワード: {", ".join(keywords)}）に関する、過去30日以内の最新ニュースや報道記事をGoogle検索してください。
+検索の際は、必ず以下の主要ニュースサイトのいずれかから情報を取得してください：
+朝日新聞 (asahi.com)、読売新聞 (yomiuri.co.jp)、日本経済新聞 (nikkei.com)、毎日新聞 (mainichi.jp)、産経新聞 (sankei.com)、NHK (nhk.or.jp)、共同通信 (47news.jp)
+
+取得したニュースから、客観的な事実（いつ、誰が、何をしたか、どのような発言をしたか）をリストアップし、以下のJSON配列フォーマットで返してください。
+実在する記事の正確なURLと日付（YYYY-MM-DD形式）を記述してください。絶対に存在しないダミーURLを捏造しないでください。
+
+JSONフォーマット（※コードブロック等の余計な装飾は付けず、生のJSON配列のみを返してください）:
+[
+  {{
+    "title": "記事のタイトル",
+    "url": "実在する記事の正確なURL",
+    "content": "記事の具体的な内容要約（200文字以上、客観的ファクトを詳しく記載してください）",
+    "published_at": "YYYY-MM-DD",
+    "source_name": "新聞社名（例: 朝日新聞、NHK等）"
+  }}
+]
+
+検索キーワードの例: ({topic_title} OR {keywords[0] if keywords else ""}) ({domain_query})
+"""
+
+    tool = genai.protos.Tool(google_search=genai.protos.Tool.GoogleSearch())
+    model = genai.GenerativeModel(model_name, tools=[tool])
+
+    try:
+        response = model.generate_content(
+            prompt,
+            generation_config=genai.GenerationConfig(
+                response_mime_type="application/json",
+                temperature=0.2,
+            ),
         )
-        resp.raise_for_status()
-        data = resp.json()
+        data = json.loads(response.text)
         results = []
-        for item in data.get("web", {}).get("results", []):
+        for item in data:
             url_val = item.get("url", "")
+            if not url_val:
+                continue
             results.append({
                 "title": item.get("title", ""),
                 "url": url_val,
-                "content": item.get("description", "")[:2000],
-                "published_at": None,
-                "source_name": item.get("profile", {}).get("name", ""),
+                "content": item.get("content", "")[:2000],
+                "published_at": item.get("published_at"),
+                "source_name": item.get("source_name", "主要新聞"),
                 "source_url": url_val,
                 "hash": hashlib.md5(url_val.encode()).hexdigest(),
             })
+        print(f"    Gemini検索成功: {len(results)}件の記事を取得しました")
         return results
-
     except Exception as e:
-        print(f"  [SEARCH ERROR] {query!r}: {e}")
+        print(f"  [GEMINI SEARCH ERROR] {topic_title!r}: {e}")
         return []
 
 
@@ -194,7 +244,7 @@ def search_brave(query: str, api_key: str, count: int = 10) -> list[dict]:
 # Topic ごとの収集
 # ==============================
 
-def collect_for_topic(topic: dict, brave_key: str | None) -> list[dict]:
+def collect_for_topic(topic: dict) -> list[dict]:
     documents: list[dict] = []
     seen: set[str] = set()
 
@@ -240,23 +290,11 @@ def collect_for_topic(topic: dict, brave_key: str | None) -> list[dict]:
         # 連続アクセスを防ぐために1秒スリープ
         time.sleep(1)
 
-    # ── Tier 2-3: Web 検索 ────────────────────
-    if brave_key:
-        queries_ja = topic.get("search_queries_ja", [])
-        if not queries_ja and topic.get("keywords"):
-            # 特異性の高い最初の2つのキーワードを検索クエリとして流用する
-            queries_ja = topic.get("keywords", [])[:2]
-
-        for query in queries_ja:
-            print(f"    Search(ja): {query!r}")
-            for item in search_brave(query, brave_key):
-                add_doc(item)
-        for query in topic.get("search_queries_en", []):
-            print(f"    Search(en): {query!r}")
-            for item in search_brave(query, brave_key, count=5):
-                add_doc(item)
-    else:
-        print("    [INFO] BRAVE_SEARCH_API_KEY が設定されていないため、RSS・国会議事録のみ収集します")
+    # ── Tier 2-3: Web 検索 (Gemini Google Search Grounding) ──
+    print(f"    Gemini Google Search Grounding を実行中...")
+    gemini_model = "gemini-3.5-flash"  # 日次更新での検索グラウンディング用モデル
+    for item in search_via_gemini_grounding(topic["title"], topic.get("keywords", []), gemini_model):
+        add_doc(item)
 
     return documents
 
@@ -271,7 +309,6 @@ def main() -> None:
         print("Topic が見つかりません")
         return
 
-    brave_key = os.environ.get("BRAVE_SEARCH_API_KEY")
     all_documents: dict[str, list[dict]] = {}
 
     for topic in topics:
@@ -280,7 +317,7 @@ def main() -> None:
             continue
 
         print(f"\n[COLLECT] {topic['title']} ({topic['slug']})")
-        docs = collect_for_topic(topic, brave_key)
+        docs = collect_for_topic(topic)
         print(f"  収集件数: {len(docs)}")
         all_documents[topic["slug"]] = docs
 

@@ -31,7 +31,7 @@ jobs:
 
       - name: 情報収集（collect.py）
         env:
-          BRAVE_SEARCH_API_KEY: ${{ secrets.BRAVE_SEARCH_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/collect.py
 
       - name: AI分析・Markdown更新（analyze.py）
