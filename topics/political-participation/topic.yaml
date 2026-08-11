@@ -1,0 +1,19 @@
+id: political-participation
+title: 主権者教育と政治参加
+slug: political-participation
+description: 若年層をはじめとする市民の政治への関心を高め、主権者としての意識を育むための教育や啓発活動、政治参加のあり方に関する論点。
+status: active
+priority: normal
+keywords:
+- 主権者教育
+- 政治参加
+- 若者の政治離れ
+- 主権者
+use_shared_sources: true
+rss_feeds_primary:
+- type: ndl_api
+  keyword: 主権者教育
+rss_feeds: []
+related_countries:
+- JP
+created_at: '2026-08-11'

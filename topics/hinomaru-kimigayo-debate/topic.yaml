@@ -1,0 +1,20 @@
+id: hinomaru-kimigayo-debate
+title: 国旗国歌の義務化と思想・良心の自由
+slug: hinomaru-kimigayo-debate
+description: 学校教育や公的行事における「日の丸」掲揚や「君が代」斉唱の義務化、およびそれに伴う教職員への処分と、憲法が保障する思想・良心の自由や表現の自由との整合性をめぐる議論。
+status: active
+priority: normal
+keywords:
+- 国旗国歌
+- 日の丸
+- 君が代
+- 思想・良心の自由
+- 学習指導要領
+use_shared_sources: true
+rss_feeds_primary:
+- type: ndl_api
+  keyword: 国旗国歌
+rss_feeds: []
+related_countries:
+- JP
+created_at: '2026-08-11'

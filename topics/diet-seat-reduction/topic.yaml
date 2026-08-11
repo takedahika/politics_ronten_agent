@@ -1,0 +1,19 @@
+id: diet-seat-reduction
+title: 議員定数削減
+slug: diet-seat-reduction
+description: 国会議員の定数（議席数）を削減することの是非や、民主主義における代表制への影響、選挙制度改革に関する議論。
+status: active
+priority: normal
+keywords:
+- 議員定数削減
+- 定数削減
+- 選挙制度改革
+- 一票の格差
+use_shared_sources: true
+rss_feeds_primary:
+- type: ndl_api
+  keyword: 議員定数
+rss_feeds: []
+related_countries:
+- JP
+created_at: '2026-08-11'
