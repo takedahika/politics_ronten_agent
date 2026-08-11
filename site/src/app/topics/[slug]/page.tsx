@@ -8,6 +8,9 @@ interface Props {
 
 export async function generateStaticParams() {
   const slugs = getTopicSlugs();
+  if (slugs.length === 0) {
+    return [{ slug: "_placeholder" }];
+  }
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -69,11 +72,11 @@ export default async function TopicPage({ params }: Props) {
         <div className="newsletter-cta animate-in">
           <div className="newsletter-cta-inner">
             <div className="newsletter-cta-header">
-              <span className="newsletter-cta-eyebrow">✍️ ニュースレター連動エッセイ</span>
+              <span className="newsletter-cta-eyebrow">✍️ ニュースレター</span>
             </div>
             
             <p className="newsletter-cta-body">
-              このトピックの背景と問いは、エッセイ「<strong>1年に3日だけ政治を考える</strong>」で取り上げられました。
+              このトピックは、以下のニュースレターを起点に調査が開始されました。
             </p>
 
             {newsletterArticles.length > 0 && (

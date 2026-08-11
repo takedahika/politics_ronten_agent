@@ -130,11 +130,16 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
 新規に追跡を開始する論点「{title}」（説明: {description}、キーワード: {', '.join(keywords)}）について、
 客観的な事実（Fact）と公的文書・学術論文・公式判例等のURLをベースとした初期ドキュメントを作成してください。
 
+【Google検索グラウンディングの使用について】
+1. あなたにはGoogle検索ツールが提供されています。生成を行う前に、この論点に関する事実関係、背景、学術論文、判例、公的調査を検索してください。
+2. 検索の際は、特に日本の大学・研究機関（site:ac.jp）、政府・省庁・自治体（site:go.jp）、または信頼性の高い主要ニュース機関の一次資料を優先的に検索・参照してください。
+3. 記述するすべての事実・出来事の項目について、あなたが検索結果から【実際に参照した本物のURL】を必ず `[出典: 資料名・サイト名](URL)` の形式で付与してください。
+4. URLの捏造（ハルシネーション）は絶対に禁止します。必ず実在するURLのみを使用してください。
+
 【絶対ルール】
 1. AI独自の私見や「〜という懸念がある」といった作文・解釈は一切書かないこと。
 2. 実際に起きている出来事、制定された法律、判例、公的調査、学術的指摘のみを事実として記述すること。
-3. 出来事やポイントのすべての項目に、参照元・一次資料となる実在するURL（例: `https://kokkai.ndl.go.jp/`, `https://www.courts.go.jp/`, `https://elaws.e-gov.go.jp/` など）を必ず [出典: 名前](URL) の形式で付与すること。
-4. タイムライン（timeline）は、最新の出来事が一番上（降順 / 新しい順）に来るように並べること。
+3. タイムライン（timeline）は、最新の出来事が一番上（降順 / 新しい順）に来るように並べること。
 
 【出力フォーマット】
 以下のJSON形式でのみ出力してください。他の装飾テキストは一切含めないでください。
@@ -143,12 +148,13 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
   "overview": "### 📌 実際に議論されている主なポイント\\n\\n- **[ポイント名]**\\n  [具体的な事実説明]\\n  [出典: 資料名](https://...)\\n\\n...",
   "timeline": "### 📜 発端と経過（歴史的事実）\\n\\n- **YYYY-MM-DD**: [直近の出来事・法案成立等の事実]\\n  [出典: 公式議事録/判例等](https://...)\\n\\n- **YYYY-MM-DD**: [過去の出来事・原点]\\n  [出典: 公式議事録/判例等](https://...)\\n",
   "facts": "### 💬 確認された事実と主な立場\\n\\n#### 確認された事実（Fact）\\n- [法的規定・数値データ等]\\n  [出典: 官報/e-Gov](https://...)\\n\\n#### 主な立場（Claims）\\n- **[立場名]**: [発言・公約・意見書の要旨]\\n  [出典: 公式議事録/意見書](https://...)\\n",
-  "international": "### 🌐 各国との比較\\n\\n- **[国名]**: [制度や対応の事実]\\n  [出典: 公式資料](https://...)\\n",
-  "sources": "### 🔗 参照した情報源・一次資料\\n\\n- [国会議事録検索システム](https://kokkai.ndl.go.jp/)\\n- [e-Gov 法令検索](https://elaws.e-gov.go.jp/)\\n- [最高裁判所 裁判例情報](https://www.courts.go.jp/)\\n"
+  "international": "### 🌐 各国との比較\\n\\n- **[国名]**: [制度や対応 of 事実]\\n  [出典: 公式資料](https://...)\\n",
+  "sources": "### 🔗 参照した情報源・一次資料\\n\\n- [国会議事録検索システム](https://kokkai.ndl.go.jp/)\\n- [e-Gov 法令検索](https://elaws.e-gov.go.jp/)\\n- [最高裁判所 裁判例情報](https://www.courts.go.jp/)\\n- [その他の参照元](実際のURL)\\n"
 }}
 
 """
-    model = genai.GenerativeModel(model_name)
+    # Google Search Groundingツールを有効化
+    model = genai.GenerativeModel(model_name, tools="google_search_retrieval")
     try:
         response = model.generate_content(
             prompt,
@@ -163,7 +169,7 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
         return {}
 
 
-def create_topic_files(topic_data: dict) -> Path | None:
+def create_topic_files(topic_data: dict, essay_title: str = "", essay_url: str = "", model_name: str = "gemini-3.5-flash") -> Path | None:
     slug = topic_data.get("id")
     if not slug:
         return None
@@ -196,7 +202,13 @@ def create_topic_files(topic_data: dict) -> Path | None:
         ],
         "rss_feeds": [],
         "related_countries": ["JP"],
-        "created_at": datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
+        "created_at": datetime.now(tz=timezone.utc).strftime("%Y-%m-%d"),
+        "newsletter_articles": [
+            {
+                "title": essay_title,
+                "url": essay_url
+            }
+        ] if essay_title and essay_url else []
     }
 
     with open(topic_dir / "topic.yaml", "w", encoding="utf-8") as f:
@@ -204,7 +216,7 @@ def create_topic_files(topic_data: dict) -> Path | None:
 
     # 2. 初期コンテンツの生成（全記述URL付き）
     print(f"AIによる初期コンテンツ（歴史・背景・ファクト調査）を生成中: {title}")
-    initial_content = generate_initial_topic_content(title, description, keywords, "gemini-3.5-flash")
+    initial_content = generate_initial_topic_content(title, description, keywords, model_name)
 
     files = ["overview.md", "timeline.md", "facts.md", "claims.md", "issues.md", "international.md", "sources.md"]
     for file in files:
@@ -376,7 +388,7 @@ def main():
 
         # 提案処理
         for topic_data in proposed_topics:
-            topic_dir = create_topic_files(topic_data)
+            topic_dir = create_topic_files(topic_data, essay_title, essay_url, model_name)
             if topic_dir:
                 save_processed_essay(essay_hash)
                 propose_via_github(topic_dir, topic_data.get("title", ""), essay_title)
