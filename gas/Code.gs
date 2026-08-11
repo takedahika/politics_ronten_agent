@@ -30,7 +30,8 @@ const CONFIG = {
   GITHUB_PAT: PropertiesService.getScriptProperties().getProperty("GITHUB_PAT") || "YOUR_GITHUB_PERSONAL_ACCESS_TOKEN",
   
   // Substackからのメールを特定するための検索クエリ
-  GMAIL_SEARCH_QUERY: "from:substack.com is:unread",
+  // システム通知（統計、アセット共有、招待、いいね等）を検索レベルでも除外
+  GMAIL_SEARCH_QUERY: 'from:substack.com is:unread -shareable -stats -invitation -liked -subscriber -commented -analytics',
   
   // 処理済みメールに付けるラベル名（重複処理防止用）
   PROCESSED_LABEL: "Processed_RontenBot"
@@ -46,13 +47,13 @@ function checkSubstackEmails() {
     return;
   }
   
-  // デバッグ用: PATが読み込めているか先頭数文字を確認
+  // デバッグ用: PATが読み込めているか確認
   const maskedPat = pat.substring(0, 4) + "..." + pat.substring(pat.length - 4);
   Logger.log(`使用中の GITHUB_PAT: ${maskedPat}`);
 
-  const threads = GmailApp.search(CONFIG.GMAIL_SEARCH_QUERY, 0, 5);
+  const threads = GmailApp.search(CONFIG.GMAIL_SEARCH_QUERY, 0, 10);
   if (threads.length === 0) {
-    Logger.log("新着の Substack メールはありませんでした。");
+    Logger.log("新着の Substack エッセイメールはありませんでした。");
     return;
   }
 
@@ -62,23 +63,25 @@ function checkSubstackEmails() {
     const messages = thread.getMessages();
     const latestMessage = messages[messages.length - 1]; // 最新メッセージ
 
+    const title = latestMessage.getSubject() || "";
+    const from = latestMessage.getFrom() || "";
+    const plainBody = latestMessage.getPlainBody() || "";
+    const htmlBody = latestMessage.getBody() || "";
+
     // ==========================================
     // システムメール・運営通知・いいね等の除外判定
     // ==========================================
-    if (isSystemOrNotificationEmail(title)) {
+    if (isSystemOrNotificationEmail(title, from, plainBody)) {
       Logger.log(`通知・システムメールのためスキップ: 「${title}」`);
       thread.addLabel(processedLabel);
       thread.markRead();
       continue;
     }
-
-    const plainBody = latestMessage.getPlainBody();
-    const htmlBody = latestMessage.getBody();
     
     // Substackの記事URLを本文から抽出
     const articleUrl = extractSubstackUrl(htmlBody) || extractSubstackUrl(plainBody) || "";
 
-    // 記事URLが見つからない場合も通知メールとみなしてスキップ
+    // 記事URLが含まれていないメールも通知・システムメールとみなしてスキップ
     if (!articleUrl) {
       Logger.log(`記事URLが含まれていないためスキップ: 「${title}」`);
       thread.addLabel(processedLabel);
@@ -86,8 +89,7 @@ function checkSubstackEmails() {
       continue;
     }
 
-    Logger.log(`新着エッセイ検出: 「${title}」 (URL: ${articleUrl})`);
-
+    Logger.log(`新着エッセイを検出しました: 「${title}」 (URL: ${articleUrl})`);
 
     // GitHub Actions の workflow_dispatch を実行
     const success = triggerGitHubWorkflow({
@@ -100,7 +102,7 @@ function checkSubstackEmails() {
       // 重複処理防止のためラベルを付与＆既読化
       thread.addLabel(processedLabel);
       thread.markRead();
-      Logger.log(`成功: ワークフローを起動し、メールに「${CONFIG.PROCESSED_LABEL}」ラベルを付与しました。`);
+      Logger.log(`成功: GitHub Actions ワークフローを起動しました。メールに「${CONFIG.PROCESSED_LABEL}」ラベルを付与しました。`);
     } else {
       Logger.log(`失敗: ワークフロー起動に失敗しました。次回再試行します。`);
     }
@@ -150,7 +152,6 @@ function triggerGitHubWorkflow(data) {
   }
 }
 
-
 /**
  * 本文から Substack の記事 URL (https://*.substack.com/p/...) を抽出するヘルパー
  */
@@ -174,22 +175,28 @@ function getOrCreateLabel(name) {
 /**
  * お知らせ・システム通知・いいね等のメールを除外判定する
  */
-function isSystemOrNotificationEmail(subject) {
-  if (!subject) return true;
+function isSystemOrNotificationEmail(subject, fromAddress, bodyText) {
+  const textToTest = `${subject} ${fromAddress} ${bodyText.substring(0, 300)}`.toLowerCase();
 
   const ignoreKeywords = [
+    // 著者向け通知
     "shareable assets",
+    "shareable asset",
+    "stats for",
+    "weekly stats",
+    "dashboard",
+    "analytics",
     "accepted your invitation",
     "invitation",
+    "your post is live",
+    
+    // リアクション・購読通知
     "liked your",
     "liked",
     "commented",
     "comment",
     "subscriber",
     "subscribed",
-    "stats for",
-    "weekly stats",
-    "dashboard",
     "pledge",
     "payment",
     "receipt",
@@ -197,14 +204,16 @@ function isSystemOrNotificationEmail(subject) {
     "subscription",
     "restacked",
     "repost",
+    
+    // 日本語キーワード
     "いいね",
     "コメント",
     "登録",
     "招待",
-    "アセット"
+    "アセット",
+    "統計",
+    "パフォーマンス"
   ];
 
-  const lowerSubject = subject.toLowerCase();
-  return ignoreKeywords.some(keyword => lowerSubject.includes(keyword));
+  return ignoreKeywords.some(keyword => textToTest.includes(keyword));
 }
-
