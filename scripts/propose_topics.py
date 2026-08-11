@@ -165,8 +165,11 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
         )
         return json.loads(response.text)
     except Exception as e:
-        print(f"初期コンテンツ生成エラー: {e}")
-        return {}
+        raise RuntimeError(
+            f"Google Search Groundingを使用した初期コンテンツ生成に失敗しました。\n"
+            f"原因: {e}\n"
+            f"※注意: Google Search Grounding機能（Google検索連携）はGemini APIの【有料ティア（従量課金設定）】のAPIキーでのみ利用可能です。無料ティアのキーでは動作しません。有料設定にするか、検索を伴わない元のモデル構成に戻す必要があります。"
+        ) from e
 
 
 def create_topic_files(topic_data: dict, essay_title: str = "", essay_url: str = "", model_name: str = "gemini-3.5-flash") -> Path | None:
@@ -217,6 +220,8 @@ def create_topic_files(topic_data: dict, essay_title: str = "", essay_url: str =
     # 2. 初期コンテンツの生成（全記述URL付き）
     print(f"AIによる初期コンテンツ（歴史・背景・ファクト調査）を生成中: {title}")
     initial_content = generate_initial_topic_content(title, description, keywords, model_name)
+    if not initial_content:
+        raise ValueError("AIによる初期コンテンツの生成結果が空です。APIの実行エラーが発生しました。")
 
     files = ["overview.md", "timeline.md", "facts.md", "claims.md", "issues.md", "international.md", "sources.md"]
     for file in files:
