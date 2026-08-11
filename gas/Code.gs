@@ -62,18 +62,11 @@ function checkSubstackEmails() {
     const messages = thread.getMessages();
     const latestMessage = messages[messages.length - 1]; // 最新メッセージ
 
-    const title = latestMessage.getSubject();
-    
     // ==========================================
-    // システムメール・運営通知を除外するフィルター
+    // システムメール・運営通知・いいね等の除外判定
     // ==========================================
-    if (
-      title.includes("Shareable assets") ||
-      title.includes("accepted your invitation") ||
-      title.includes("invitation") ||
-      title.includes("Substack") && title.includes("welcome")
-    ) {
-      Logger.log(`システムメールのためスキップ: 「${title}」`);
+    if (isSystemOrNotificationEmail(title)) {
+      Logger.log(`通知・システムメールのためスキップ: 「${title}」`);
       thread.addLabel(processedLabel);
       thread.markRead();
       continue;
@@ -82,10 +75,19 @@ function checkSubstackEmails() {
     const plainBody = latestMessage.getPlainBody();
     const htmlBody = latestMessage.getBody();
     
-    // Substackの記事URLを本文から抽出を試みる
+    // Substackの記事URLを本文から抽出
     const articleUrl = extractSubstackUrl(htmlBody) || extractSubstackUrl(plainBody) || "";
 
+    // 記事URLが見つからない場合も通知メールとみなしてスキップ
+    if (!articleUrl) {
+      Logger.log(`記事URLが含まれていないためスキップ: 「${title}」`);
+      thread.addLabel(processedLabel);
+      thread.markRead();
+      continue;
+    }
+
     Logger.log(`新着エッセイ検出: 「${title}」 (URL: ${articleUrl})`);
+
 
     // GitHub Actions の workflow_dispatch を実行
     const success = triggerGitHubWorkflow({
@@ -168,3 +170,41 @@ function getOrCreateLabel(name) {
   }
   return label;
 }
+
+/**
+ * お知らせ・システム通知・いいね等のメールを除外判定する
+ */
+function isSystemOrNotificationEmail(subject) {
+  if (!subject) return true;
+
+  const ignoreKeywords = [
+    "shareable assets",
+    "accepted your invitation",
+    "invitation",
+    "liked your",
+    "liked",
+    "commented",
+    "comment",
+    "subscriber",
+    "subscribed",
+    "stats for",
+    "weekly stats",
+    "dashboard",
+    "pledge",
+    "payment",
+    "receipt",
+    "welcome to",
+    "subscription",
+    "restacked",
+    "repost",
+    "いいね",
+    "コメント",
+    "登録",
+    "招待",
+    "アセット"
+  ];
+
+  const lowerSubject = subject.toLowerCase();
+  return ignoreKeywords.some(keyword => lowerSubject.includes(keyword));
+}
+
