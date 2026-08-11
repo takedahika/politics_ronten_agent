@@ -4,7 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       article_url:
-        description: "解析するSubstackの記事URL（空欄の場合はGASから渡された本文を使用）"
+        description: "解析するSubstackの記事URL（空欄の場合は本文を使用）"
+        required: false
+        default: ""
+      article_content:
+        description: "GAS経由で渡されるエッセイ本文"
+        required: false
+        default: ""
+      article_title:
+        description: "GAS経由で渡されるエッセイタイトル"
+        required: false
+        default: ""
+      article_original_url:
+        description: "GAS経由で渡されるエッセイのオリジナルURL"
         required: false
         default: ""
 
@@ -36,6 +48,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           ARTICLE_URL: ${{ github.event.inputs.article_url }}
+          ARTICLE_CONTENT: ${{ github.event.inputs.article_content }}
+          ARTICLE_TITLE: ${{ github.event.inputs.article_title }}
+          ARTICLE_ORIGINAL_URL: ${{ github.event.inputs.article_original_url }}
         run: python scripts/propose_topics.py
 
       - name: Discordに通知を送信
