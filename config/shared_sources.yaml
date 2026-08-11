@@ -9,17 +9,15 @@ shared_rss_feeds:
   nhk_politics:
     name: "NHKニュース 政治"
     url: "https://www3.nhk.or.jp/rss/news/cat4.xml"
-  # jiji_politics:
-  #   name: "時事通信 政治"
-  #   url: "https://www.jiji.com/rss/pol.rss"
-  # kyodo_politics:
-  #   name: "共同通信"
-  #   url: "https://www.47news.jp/rss/politics.xml"
+  kyodo_politics:
+    name: "共同通信"
+    url: "https://www.47news.jp/rss/politics.xml"
 
   # 大手新聞社
-  # asahi_politics:
-  #   name: "朝日新聞 政治"
-  #   url: "https://www.asahi.com/rss/asahi/newsheadlines.rdf"
+  asahi_politics:
+    name: "朝日新聞 政治"
+    url: "https://www.asahi.com/rss/asahi/newsheadlines.rdf"
+
   # mainichi_flash:
   #   name: "毎日新聞 速報"
   #   url: "https://mainichi.jp/rss/etc/mainichi-flash.rss"

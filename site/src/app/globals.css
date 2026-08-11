@@ -634,78 +634,125 @@ body {
 }
 
 /* ==============================
-   ニュースレターCTA
+   ニュースレターCTA — 洗練されたハイパーリンク表示
    ============================== */
 
 .newsletter-cta {
-  margin: 2rem 0 3rem;
+  margin: 1.5rem 0 2.5rem;
 }
 
 .newsletter-cta-inner {
-  padding: 2rem 2.5rem;
-  background: linear-gradient(135deg, rgba(168, 125, 78, 0.08) 0%, rgba(168, 125, 78, 0.03) 100%);
-  border: 1px solid rgba(168, 125, 78, 0.3);
+  padding: 1.25rem 1.75rem;
+  background: linear-gradient(135deg, rgba(168, 125, 78, 0.07) 0%, rgba(168, 125, 78, 0.02) 100%);
+  border: 1px solid rgba(168, 125, 78, 0.25);
   border-left: 3px solid var(--gold);
-  border-radius: 2px;
+  border-radius: 3px;
+}
+
+.newsletter-cta-header {
+  margin-bottom: 0.5rem;
 }
 
 .newsletter-cta-eyebrow {
-  font-size: 0.7rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-size: 0.725rem;
+  letter-spacing: 0.1em;
+  font-weight: 500;
   color: var(--gold);
   font-family: var(--font-mono);
-  margin-bottom: 0.75rem;
 }
 
 .newsletter-cta-body {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
-  line-height: 1.9;
-  margin-bottom: 1.25rem;
+  line-height: 1.7;
+  margin-bottom: 0.85rem;
 }
 
 .newsletter-cta-body strong {
   color: var(--text-primary);
-  font-weight: 600;
 }
 
-.newsletter-cta-links {
+.newsletter-cta-articles {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
-.newsletter-cta-link {
-  font-size: 0.875rem;
-  color: var(--gold-light);
-  text-decoration: none;
-  line-height: 1.6;
-  transition: color 0.2s;
-}
-
-.newsletter-cta-link:hover {
+.newsletter-article-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
   color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: background 0.2s, border-color 0.2s;
+  word-break: break-all;
+}
+
+.newsletter-article-card:hover {
+  background: rgba(168, 125, 78, 0.12);
+  border-color: rgba(168, 125, 78, 0.4);
+}
+
+.newsletter-article-icon {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.newsletter-article-title {
+  flex-grow: 1;
+  font-weight: 500;
+  color: var(--gold-light);
+}
+
+.newsletter-article-arrow {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.newsletter-article-card:hover .newsletter-article-arrow {
+  color: var(--gold);
+  transform: translate(2px, -2px);
+}
+
+.newsletter-cta-footer {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .newsletter-cta-subscribe {
-  display: inline-block;
-  padding: 0.55rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.9rem;
   background: var(--gold-dim);
-  border: 1px solid rgba(168, 125, 78, 0.4);
+  border: 1px solid rgba(168, 125, 78, 0.35);
   color: var(--gold-light);
-  font-size: 0.8rem;
+  font-size: 0.775rem;
   font-family: var(--font-mono);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   text-decoration: none;
-  border-radius: 1px;
+  border-radius: 3px;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .newsletter-cta-subscribe:hover {
   background: rgba(168, 125, 78, 0.2);
   color: var(--text-primary);
-  border-color: rgba(168, 125, 78, 0.7);
+  border-color: rgba(168, 125, 78, 0.6);
 }
+
+/* 本文内のリンクも自動折り返し */
+.md-content a {
+  word-break: break-all;
+}
+
 
