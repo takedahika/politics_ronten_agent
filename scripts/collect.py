@@ -97,7 +97,7 @@ def fetch_rss(url: str, max_age_days: int = 14) -> list[dict]:
 # 国会議事録検索 API（国立国会図書館）
 # ==============================
 
-def fetch_kokkai_records(keyword: str, max_records: int = 10, days_back: int = 14) -> list[dict]:
+def fetch_kokkai_records(keyword: str, max_records: int = 10, days_back: int = 30) -> list[dict]:
     """
     国会議事録検索システム API でキーワード検索する。
     API doc: https://kokkai.ndl.go.jp/api.html
