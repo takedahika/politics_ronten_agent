@@ -1,7 +1,0 @@
-### 🔗 参照した情報源・一次資料
-
-- [衆議院：国旗の損壊等の処罰に関する法律案](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHPSrOaJaleOOsFUZ2_J-erSN0NJSFJf_tXhNiw-ewO3Dq3ADF5AFO9c73nM-xN3NFXANDu9_pylpYhvcI2pr6tEAHDubaiV8Pb6SU2U9DYMnUfaT8TAwtGcCTri9nJb8ZWwF_XOM7pNp4-TIO3XHK9B5O5UWawEq6Sz8Bwo-pXr9y-i7wnYtIHvC3V)
-- [法務省：国旗の損壊等の処罰に関する法律 Q&A](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHPbcPoaQDeFyZvRsrm6FkUaiOX2yRkKWFLsAmRMr3I7ereY2n_ZPSE9K7t7KPwbZfHqfJttLr9Ux2u2JYfI9nUnfWxAbJnFNogoBOdY9O363OMECGrKqvNyFJloZwX0lJdC9NcBA==)
-- [日本弁護士連合会：「国旗の損壊等の処罰に関する法律」案に反対する会長声明](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF2uopw61F-a8qj56HsLhr8bztPVtPd_EwQ_YfZr_jePigqBGF-v6rC-AANspP9SkUHM73XdMgCgvcWD1wGWLhQsMbS7H45H12ryGgu2H0F_pDUdLUFapfdcIs-fOB_gsYeBsUjQChhoXT9TSN2V_QilofiYv-AHSyy2OU=)
-- [自由法曹団：「国旗の損壊等の処罰に関する法律」の制定に反対し、同法律案の廃案を求める声明](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEShCnQ3YM4ouiYJCOgmRl2P2Y00Wklh3bBeMQP9gR3psapZBir1GaxJWRNqQ0oHrH2uxlaQjmSwFHuQQnU8Rk7IWOeSM_8P1hF8Z8krAVpsPHzcWz3i_wdkxYkE5B9rT3hljBApA==)
-- [Human Rights Watch：日本：国旗損壊罪は言論の自由を侵害する](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF18lCn5AoAHK4I5Q4dELBhXqkdeiw9jynpAQcIGIVvbsHxehRBW6rhMKRpSVvbBB6wlYbbAzDKJ6NEAOdSWv_1tMqRuIsEHP4Q6VTKVMW0g7UqHor39mIxY9JUDvqqiOnYEEY0dQ5YgvYuJu1hHFAE2LAiPCwoYsAsCyU6U1FskQppVNS-tsWbgahKKA==)
