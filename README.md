@@ -60,7 +60,12 @@
 │   ├── propose_topics.py      # 新規論点提案スクリプト
 │   └── requirements.txt
 │
+├── gas/                       # Substack Gmail自動検知用 Google Apps Script
+│   ├── Code.gs                # GAS本体（Gmail検知→GitHub Actions起動）
+│   └── README.md              # GASのセットアップ手順
+│
 ├── site/                      # Next.jsサイト（GitHub Pages）
+
 │   └── src/app/
 │       ├── page.tsx           # トップページ
 │       └── topics/[slug]/     # 各論点ページ
