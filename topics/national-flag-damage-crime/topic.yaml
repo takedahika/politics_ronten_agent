@@ -1,0 +1,19 @@
+id: national-flag-damage-crime
+title: 国旗損壊罪の是非と表現の自由
+slug: national-flag-damage-crime
+description: 国旗を損壊・汚損する行為を処罰する「国旗損壊罪」の導入を巡り、表現の自由の侵害や処罰基準の曖昧さ、愛国心の強制といった観点から議論が行われている。
+status: active
+priority: normal
+keywords:
+- 国旗損壊罪
+- 表現の自由
+- 議員立法
+- 愛国心
+use_shared_sources: true
+rss_feeds_primary:
+- type: ndl_api
+  keyword: 国旗損壊
+rss_feeds: []
+related_countries:
+- JP
+created_at: '2026-08-11'
