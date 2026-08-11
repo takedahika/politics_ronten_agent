@@ -99,54 +99,60 @@ def fetch_rss(url: str, max_age_days: int = 14) -> list[dict]:
 # 国会議事録検索 API（国立国会図書館）
 # ==============================
 
-def fetch_kokkai_records(keyword: str, max_records: int = 10, days_back: int = 30) -> list[dict]:
+def fetch_kokkai_records(keyword: str, from_date: str) -> list[dict]:
     """
     国会議事録検索システム API でキーワード検索する。
-    API doc: https://kokkai.ndl.go.jp/api.html
-    認証不要・無料。
+    from_date 以降の記録を全件取得する。
     """
+    results = []
     try:
-        from datetime import datetime, timedelta
-        # 過去 N 日間の発言のみに絞る（過負荷防止・重複収集防止）
-        start_date = (datetime.now() - timedelta(days=days_back)).strftime("%Y-%m-%d")
+        start_record = 1
+        while True:
+            resp = httpx.get(
+                "https://kokkai.ndl.go.jp/api/speech",
+                params={
+                    "any": keyword,
+                    "recordPacking": "json",
+                    "maximumRecords": 10,
+                    "startRecord": start_record,
+                    "from": from_date,
+                },
+                timeout=20,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            
+            records = data.get("speechRecord", [])
+            if not records:
+                break
+                
+            for record in records:
+                meeting_url = record.get("meetingURL", "")
+                speech_url = record.get("speechURL", meeting_url)
+                date_str = record.get("date", "")
+                house = record.get("nameOfHouse", "")
+                committee = record.get("nameOfMeeting", "")
+                speaker = record.get("speaker", "")
+                speech = record.get("speech", "")[:2000]
 
-        resp = httpx.get(
-            "https://kokkai.ndl.go.jp/api/speech",
-            params={
-                "any": keyword,
-                "recordPacking": "json",
-                "maximumRecords": max_records,
-                "startRecord": 1,
-                "from": start_date,
-            },
-            timeout=20,
-        )
-        resp.raise_for_status()
-        data = resp.json()
-        results = []
+                title = f"【{house}】{committee} — {speaker}発言（{date_str}）"
 
-        for record in data.get("speechRecord", []):
-            # 会議の基本情報
-            meeting_url = record.get("meetingURL", "")
-            speech_url = record.get("speechURL", meeting_url)
-            date_str = record.get("date", "")
-            house = record.get("nameOfHouse", "")
-            committee = record.get("nameOfMeeting", "")
-            speaker = record.get("speaker", "")
-            speech = record.get("speech", "")[:2000]
-
-            title = f"【{house}】{committee} — {speaker}発言（{date_str}）"
-
-            results.append({
-                "title": title,
-                "url": speech_url or meeting_url,
-                "content": speech,
-                "published_at": date_str,
-                "source_name": f"国会議事録（{house}・{committee}）",
-                "source_url": speech_url or meeting_url,
-                "source_type": "government",
-                "hash": hashlib.md5((speech_url + date_str + speaker).encode()).hexdigest(),
-            })
+                results.append({
+                    "title": title,
+                    "url": speech_url or meeting_url,
+                    "content": speech,
+                    "published_at": date_str,
+                    "source_name": f"国会議事録（{house}・{committee}）",
+                    "source_url": speech_url or meeting_url,
+                    "source_type": "government",
+                    "hash": hashlib.md5((speech_url + date_str + speaker).encode()).hexdigest(),
+                })
+            
+            next_record_pos = data.get("nextRecordPosition")
+            if next_record_pos:
+                start_record = int(next_record_pos)
+            else:
+                break
 
         return results
 
@@ -159,7 +165,7 @@ def fetch_kokkai_records(keyword: str, max_records: int = 10, days_back: int = 3
 # Web 検索（Gemini Google Search Grounding）
 # ==============================
 
-def search_via_gemini_grounding(topic_title: str, keywords: list[str], model_name: str = "gemini-1.5-flash") -> list[dict]:
+def search_via_gemini_grounding(topic_title: str, keywords: list[str], model_name: str = "gemini-1.5-flash", from_date: str = "") -> list[dict]:
     """GeminiのGoogle Search Groundingを使って、主要新聞社のサイトから最新情報を検索する"""
 
 
@@ -186,7 +192,7 @@ def search_via_gemini_grounding(topic_title: str, keywords: list[str], model_nam
 
     prompt = f"""あなたは政治・社会問題のニュースを収集する有能なリサーチアシスタントです。
 
-テーマ「{topic_title}」（キーワード: {", ".join(keywords)}）に関する、過去30日以内に報じられた最新のニュースや報道記事をGoogle検索してください。
+テーマ「{topic_title}」（キーワード: {", ".join(keywords)}）に関する、{from_date}以降に報じられた最新のニュースや報道記事をGoogle検索してください。
 検索の際は、必ず以下の主要ニュースサイトのいずれかから情報を取得してください：
 朝日新聞 (asahi.com)、読売新聞 (yomiuri.co.jp)、日本経済新聞 (nikkei.com)、毎日新聞 (mainichi.jp)、産経新聞 (sankei.com)、NHK (nhk.or.jp)、共同通信 (47news.jp)
 
@@ -265,14 +271,25 @@ def collect_for_topic(topic: dict) -> list[dict]:
             seen.add(doc["hash"])
             documents.append(doc)
 
+    from datetime import datetime, timedelta
+    default_from_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
+    
+    kokkai_last_date = topic.get("kokkai_last_date", default_from_date)
+    news_last_date = topic.get("news_last_date", default_from_date)
+
+    latest_kokkai_date = kokkai_last_date
+    latest_news_date = news_last_date
+
     # ── Tier 1: 一次資料 ──────────────────────
     # 国会議事録 API（認証不要）
     for primary in topic.get("rss_feeds_primary", []):
         if isinstance(primary, dict) and primary.get("type") == "ndl_api":
             kw = primary.get("keyword", topic["title"])
-            print(f"    国会議事録API: keyword={kw!r}")
-            for item in fetch_kokkai_records(kw):
+            print(f"    国会議事録API: keyword={kw!r}, from={kokkai_last_date}")
+            for item in fetch_kokkai_records(kw, from_date=kokkai_last_date):
                 add_doc(item)
+                if item["published_at"] and item["published_at"] > latest_kokkai_date:
+                    latest_kokkai_date = item["published_at"]
 
     # ── Tier 2: RSS フィード（共通ソース + 固有ソース） ──
     rss_list = []
@@ -299,14 +316,34 @@ def collect_for_topic(topic: dict) -> list[dict]:
         print(f"    RSS: {rss_url}")
         for item in fetch_rss(rss_url):
             add_doc(item)
+            pub_at = item.get("published_at")
+            if pub_at and pub_at > latest_news_date:
+                latest_news_date = pub_at
         # 連続アクセスを防ぐために1秒スリープ
         time.sleep(1)
 
     # ── Tier 2-3: Web 検索 (Gemini Google Search Grounding) ──
     print(f"    Gemini Google Search Grounding を実行中...")
     gemini_model = "gemini-3.5-flash"  # 日次更新での検索グラウンディング用モデル
-    for item in search_via_gemini_grounding(topic["title"], topic.get("keywords", []), gemini_model):
+    for item in search_via_gemini_grounding(topic["title"], topic.get("keywords", []), gemini_model, from_date=news_last_date):
         add_doc(item)
+        pub_at = item.get("published_at")
+        if pub_at and pub_at > latest_news_date:
+            latest_news_date = pub_at
+
+    # 最新日付を保存
+    topic_dir = Path(topic.get("_dir", ""))
+    if topic_dir.exists():
+        yaml_path = topic_dir / "topic.yaml"
+        try:
+            with open(yaml_path, encoding="utf-8") as f:
+                config = yaml.safe_load(f)
+            config["kokkai_last_date"] = latest_kokkai_date
+            config["news_last_date"] = latest_news_date
+            with open(yaml_path, "w", encoding="utf-8") as f:
+                yaml.safe_dump(config, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
+        except Exception as e:
+            print(f"    [WARNING] topic.yaml 保存エラー: {e}")
 
     return documents
 

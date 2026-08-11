@@ -79,8 +79,12 @@ def extract_topics_from_essay(
 ) -> list[dict]:
     
     prompt = f"""
-あなたは社会的・政治的な議論を中立に整理する調査専門のAIアシスタントです。
-提示された「ニュースレター（エッセイ）」を深く読み込み、継続的にニュースや国会議事録を追跡・調査する価値のある、具体的な「社会的・政治的論点（Topic）」を抽出してください。
+あなたは社会的・政治的な議論を深く理解し、中立に整理する専門のAIリサーチアシスタントです。
+提示された「ニュースレター（エッセイ）」を読み込み、継続的にニュースや国会議事録を追跡・調査する価値のある「社会的・政治的論点（Topic）」を抽出してください。
+
+【Google検索の実行（必須）】
+エッセイの内容だけを鵜呑みにせず、必ず提供されているGoogle検索ツールを使って「過去1〜2ヶ月の最新ニュース」を検索してください。
+検索によって「現実社会で現在進行形で、どのようなキーワードや法案名で議論が取り沙汰されているか」「どの政党がこれを主導（肝入り）しているか」という政治的・社会的なコンテキストを把握してください。
 
 【既存のトピック一覧（重複を避けること）】
 {", ".join(existing_slugs)}
@@ -91,34 +95,45 @@ def extract_topics_from_essay(
 {content[:4000]}
 
 【抽出ルール】
-1. エッセイが言及しているテーマの中から、ニュース報道や国会審議を継続的に追跡すべき客観的な論点（Topic）を最大2件抽出してください。
+1. 検索した最新ニュースの文脈を踏まえ、エッセイが言及しているテーマの「現実の対立軸（Topic）」を最大2件抽出してください。
 2. 既に存在するトピックと意味的に重複するものは絶対に除外してください。
-3. トピックID (id) はURL等に使うため、英語小文字とハイフンのみ（例: seikatsu-hogo, nuclear-power-debate）にしてください。
-4. ndl_keyword は、国立国会図書館の国会議事録APIで検索した時に最もヒットしやすい、日本語の代表的な単語（例: 生活保護、原発）を指定してください。
+3. トピックID (id) は英語小文字とハイフンのみ（例: child-sns-regulation）。
+4. ndl_keyword は、国立国会図書館の国会APIで検索した時に最も精度良くヒットする、「実際の国会で頻出する具体的なフレーズや法案の略称」（複数単語の場合はスペース区切り）を指定してください。
 
 【出力フォーマット】
-以下の構造のJSON配列のみを返してください。説明文や```jsonなどのMarkdownの装飾は一切含めないでください。
+以下の構造のJSON配列のみを返してください。装飾や説明文は一切含めないでください。
 [
   {{
-    "id": "英数字とハイフン（例: child-sns-regulation）",
-    "title": "日本語のトピックタイトル（例: 子どもSNS利用規制）",
-    "description": "この論点についての短い中立な説明文",
+    "id": "英数字とハイフン",
+    "title": "日本語のトピックタイトル",
+    "description": "検索から得られた政治的コンテキスト（どの政党の肝入りか等）を含む中立な説明文",
     "keywords": ["検索用のキーワード1", "キーワード2"],
-    "ndl_keyword": "国会図書館API検索用の代表的な日本語キーワード"
+    "ndl_keyword": "実際の国会審議で使われる具体的な検索キーワード"
   }}
 ]
 """
 
-    model = genai.GenerativeModel(model_name)
-    try:
-        response = model.generate_content(
-            prompt,
-            generation_config=genai.GenerationConfig(
-                response_mime_type="application/json",
-                temperature=0.2,
-            ),
+    raw_model_name = model_name if model_name.startswith("models/") else f"models/{model_name}"
+    
+    # REST転送を使用して設定
+    api_key = os.environ.get("GEMINI_API_KEY")
+    genai.configure(api_key=api_key, transport="rest")
+    raw_client = client_mod.get_default_generative_client()
+
+    request = genai.protos.GenerateContentRequest(
+        model=raw_model_name,
+        contents=[genai.protos.Content(parts=[genai.protos.Part(text=prompt)])],
+        tools=[genai.protos.Tool(google_search=genai.protos.Tool.GoogleSearch())],
+        generation_config=genai.protos.GenerationConfig(
+            response_mime_type="application/json",
+            temperature=0.2,
         )
-        return json.loads(response.text)
+    )
+
+    try:
+        response = raw_client.generate_content(request)
+        text_content = response.candidates[0].content.parts[0].text
+        return json.loads(text_content)
     except Exception as e:
         print(f"Geminiでのトピック抽出エラー: {e}")
         return []
@@ -149,8 +164,9 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
   "overview": "### 📌 実際に議論されている主なポイント\\n\\n- **[ポイント名]**\\n  [具体的な事実説明]\\n  [出典: 資料名](https://...)\\n\\n...",
   "timeline": "### 📜 発端と経過（歴史的事実）\\n\\n- **YYYY-MM-DD**: [直近の出来事・法案成立等の事実]\\n  [出典: 公式議事録/判例等](https://...)\\n\\n- **YYYY-MM-DD**: [過去の出来事・原点]\\n  [出典: 公式議事録/判例等](https://...)\\n",
   "facts": "### 💬 確認された事実と主な立場\\n\\n#### 確認された事実（Fact）\\n- [法的規定・数値データ等]\\n  [出典: 官報/e-Gov](https://...)\\n\\n#### 主な立場（Claims）\\n- **[立場名]**: [発言・公約・意見書の要旨]\\n  [出典: 公式議事録/意見書](https://...)\\n",
+  "parties": "### 🏛️ 各党のスタンスと政治的背景\\n\\n- **[政党名・派閥]**: [推進/慎重/反対などのスタンスとその理由。どの政党の肝入り政策か等]\\n  [出典: 公式議事録/ニュース](https://...)\\n",
   "international": "### 🌐 各国との比較\\n\\n- **[国名]**: [制度や対応 of 事実]\\n  [出典: 公式資料](https://...)\\n",
-  "sources": "### 🔗 参照した情報源・一次資料\\n\\n- [国会議事録検索システム](https://kokkai.ndl.go.jp/)\\n- [e-Gov 法令検索](https://elaws.e-gov.go.jp/)\\n- [最高裁判所 裁判例情報](https://www.courts.go.jp/)\\n- [その他の参照元](実際のURL)\\n"
+  "sources": "### 🔗 参照した情報源・一次資料\\n\\n- [国会議事録検索システム](https://kokkai.ndl.go.jp/)\\n- [e-Gov 法令検索](https://elaws.e-gov.go.jp/)\\n- [その他の参照元](実際のURL)\\n"
 }}
 
 """
@@ -247,11 +263,12 @@ def create_topic_files(topic_data: dict, essay_title: str = "", essay_url: str =
     if not initial_content:
         raise ValueError("AIによる初期コンテンツの生成結果が空です。APIの実行エラーが発生しました。")
 
-    files = ["overview.md", "timeline.md", "facts.md", "claims.md", "issues.md", "international.md", "sources.md"]
+    files = ["overview.md", "timeline.md", "facts.md", "claims.md", "parties.md", "issues.md", "international.md", "sources.md"]
     for file in files:
         key = file.replace(".md", "")
         text = initial_content.get(key, "")
-        (topic_dir / file).write_text(text, encoding="utf-8")
+        if text:
+            (topic_dir / file).write_text(text, encoding="utf-8")
 
     print(f"新トピックファイルを生成しました: {topic_dir}")
     return topic_dir

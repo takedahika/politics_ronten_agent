@@ -61,6 +61,8 @@ EXTRACTION_PROMPT_TEMPLATE = """
 - ClaimとFactを混同しない
 - 推測をFactとして扱わない
 - 政治的な結論を自分で出さない
+- 【重要】発言や出来事の裏にある「政治的文脈（どの政党が主導しているか、どこが反対しているか）」を読み取り、政党や派閥のスタンスを抽出する
+- 【重要】政党のスタンスは「一般的なスタンス」ではなく、必ず「この特定のTopic（{topic_title}）に限定されたスタンス」のみを記載すること。関連しない場合は記載しない。
 
 ---
 
@@ -96,6 +98,13 @@ EXTRACTION_PROMPT_TEMPLATE = """
       "speaker": "発言者名・組織名",
       "statement": "主張の内容",
       "context": "発言の文脈（いつ・どこで）",
+      "source_url": "出典URL"
+    }}
+  ],
+  "new_parties": [
+    {{
+      "party": "政党名・派閥・政治団体など",
+      "stance": "この特定のTopic（{topic_title}）に対する具体的なスタンス（推進、肝入り、慎重、反対など）とその理由",
       "source_url": "出典URL"
     }}
   ],
@@ -423,6 +432,32 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
 
         if new_entries:
             claims_path.write_text(existing + "\n---\n\n" + "\n---\n\n".join(new_entries), encoding="utf-8")
+            changed = True
+
+    # --- parties.md: 各党のスタンスと政治的背景 ---
+    if updates.get("new_parties"):
+        parties_path = topic_path / "parties.md"
+        header = "### 🏛️ 各党のスタンスと政治的背景\n\n"
+        existing = parties_path.read_text(encoding="utf-8") if parties_path.exists() else header
+
+        new_entries = []
+        for party in updates["new_parties"]:
+            party_name = party.get("party", "")
+            stance = party.get("stance", "")
+            source_url = party.get("source_url", "")
+            
+            if not source_url:
+                continue
+
+            source_text = _source_link(source_url, "出典")
+            entry = f"- **{party_name}**: {stance}\n  ({source_text})\n"
+
+            # 完全一致でなくても、同じ政党の似たスタンスがなければ追加
+            if party_name not in existing or stance[:10] not in existing:
+                new_entries.append(entry)
+
+        if new_entries:
+            parties_path.write_text(existing + "".join(new_entries), encoding="utf-8")
             changed = True
 
     # --- sources.md: 新しいソースを追加（完全なメタデータ） ---
