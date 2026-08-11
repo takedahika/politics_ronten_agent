@@ -25,12 +25,11 @@ const CONFIG = {
   GITHUB_REPO: "politics_ronten_agent",
   WORKFLOW_ID: "propose_topics.yml",
   
-  // GitHub Personal Access Token (repo スコープ または Actions 起動権限が必要)
+  // GitHub Personal Access Token
   // ScriptProperties に 'GITHUB_PAT' を設定している場合は自動的にそちらが優先されます
   GITHUB_PAT: PropertiesService.getScriptProperties().getProperty("GITHUB_PAT") || "YOUR_GITHUB_PERSONAL_ACCESS_TOKEN",
   
   // Substackからのメールを特定するための検索クエリ
-  // 例: "from:substack.com is:unread" または "from:poli3year.substack.com is:unread"
   GMAIL_SEARCH_QUERY: "from:substack.com is:unread",
   
   // 処理済みメールに付けるラベル名（重複処理防止用）
@@ -41,6 +40,16 @@ const CONFIG = {
  * メイン関数: 定期実行トリガーから呼び出される
  */
 function checkSubstackEmails() {
+  const pat = CONFIG.GITHUB_PAT.trim();
+  if (!pat || pat === "YOUR_GITHUB_PERSONAL_ACCESS_TOKEN") {
+    Logger.log("エラー: GITHUB_PAT が設定されていません。スクリプトプロパティに 'GITHUB_PAT' を保存してください。");
+    return;
+  }
+  
+  // デバッグ用: PATが読み込めているか先頭数文字を確認
+  const maskedPat = pat.substring(0, 4) + "..." + pat.substring(pat.length - 4);
+  Logger.log(`使用中の GITHUB_PAT: ${maskedPat}`);
+
   const threads = GmailApp.search(CONFIG.GMAIL_SEARCH_QUERY, 0, 5);
   if (threads.length === 0) {
     Logger.log("新着の Substack メールはありませんでした。");
@@ -54,6 +63,22 @@ function checkSubstackEmails() {
     const latestMessage = messages[messages.length - 1]; // 最新メッセージ
 
     const title = latestMessage.getSubject();
+    
+    // ==========================================
+    // システムメール・運営通知を除外するフィルター
+    // ==========================================
+    if (
+      title.includes("Shareable assets") ||
+      title.includes("accepted your invitation") ||
+      title.includes("invitation") ||
+      title.includes("Substack") && title.includes("welcome")
+    ) {
+      Logger.log(`システムメールのためスキップ: 「${title}」`);
+      thread.addLabel(processedLabel);
+      thread.markRead();
+      continue;
+    }
+
     const plainBody = latestMessage.getPlainBody();
     const htmlBody = latestMessage.getBody();
     
@@ -85,6 +110,7 @@ function checkSubstackEmails() {
  */
 function triggerGitHubWorkflow(data) {
   const url = `https://api.github.com/repos/${CONFIG.GITHUB_OWNER}/${CONFIG.GITHUB_REPO}/actions/workflows/${CONFIG.WORKFLOW_ID}/dispatches`;
+  const pat = CONFIG.GITHUB_PAT.trim();
 
   const payload = {
     ref: "main",
@@ -99,7 +125,7 @@ function triggerGitHubWorkflow(data) {
     method: "post",
     contentType: "application/json",
     headers: {
-      "Authorization": `token ${CONFIG.GITHUB_PAT}`,
+      "Authorization": `Bearer ${pat}`,
       "Accept": "application/vnd.github.v3+json",
       "User-Agent": "GAS-RontenBot"
     },
@@ -121,6 +147,7 @@ function triggerGitHubWorkflow(data) {
     return false;
   }
 }
+
 
 /**
  * 本文から Substack の記事 URL (https://*.substack.com/p/...) を抽出するヘルパー
