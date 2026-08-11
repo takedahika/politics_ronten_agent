@@ -242,7 +242,12 @@ def collect_for_topic(topic: dict, brave_key: str | None) -> list[dict]:
 
     # ── Tier 2-3: Web 検索 ────────────────────
     if brave_key:
-        for query in topic.get("search_queries_ja", []):
+        queries_ja = topic.get("search_queries_ja", [])
+        if not queries_ja and topic.get("keywords"):
+            # 特異性の高い最初の2つのキーワードを検索クエリとして流用する
+            queries_ja = topic.get("keywords", [])[:2]
+
+        for query in queries_ja:
             print(f"    Search(ja): {query!r}")
             for item in search_brave(query, brave_key):
                 add_doc(item)
