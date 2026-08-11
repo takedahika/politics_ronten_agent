@@ -30,7 +30,7 @@ export default async function HomePage() {
           </h1>
           <p className="home-hero-desc">
             人間が「これは重要だ」と思った社会的・政治的な問いを起点に、
-            AIが継続的に情報を収集・整理する。
+            自動的に情報を収集・整理する。
             <br />
             <br />
             現在、何が分かっていて、何が議論されていて、
@@ -110,11 +110,11 @@ export default async function HomePage() {
               },
               {
                 label: "Topic",
-                desc: "AIが継続調査する知識の現在地。何が分かっていて、何が議論されているか。",
+                desc: "継続調査する知識の現在地。何が分かっていて、何が議論されているか。",
               },
               {
-                label: "AI proposes, humans approve",
-                desc: "AIは提案し、人間が承認する。すべての更新はGitHubで追跡可能。",
+                label: "Automated tracking, human approved",
+                desc: "自動で情報を収集し、人間が承認する。すべての更新はGitHubで追跡可能。",
               },
             ].map((item) => (
               <div

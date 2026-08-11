@@ -152,7 +152,7 @@ export default async function TopicPage({ params }: Props) {
           </div>
           <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", lineHeight: "1.8" }}>
             このページの変更履歴はGitHubで確認できます。
-            すべての更新はAIによる提案として作成され、人間が承認した後に公開されます。
+            すべての更新は自動提案として作成され、人間が承認した後に公開されます。
           </p>
           <a
             href={`https://github.com/takedahika/politics_ronten_agent/commits/main/topics/${slug}`}

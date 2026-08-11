@@ -142,7 +142,7 @@ def main() -> None:
 
     # コミット
     changed_slugs = [slug for slug, v in results.items() if v.get("changed")]
-    commit_msg = f"update: AI更新 {', '.join(changed_slugs)} ({timestamp})"
+    commit_msg = f"update: {', '.join(changed_slugs)} ({timestamp})"
     run_git(["commit", "-m", commit_msg])
 
     # プッシュ
