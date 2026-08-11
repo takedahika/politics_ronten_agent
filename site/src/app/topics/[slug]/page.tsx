@@ -22,14 +22,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const SECTIONS = [
-  { id: "status", label: "Current Status", ja: "現在の状況", color: "#7dd3c8", key: "overview" },
-  { id: "timeline", label: "Timeline", ja: "タイムライン", color: "#9b8fd4", key: "timeline" },
-  { id: "facts", label: "Facts", ja: "確認された事実", color: "#6db3f2", key: "facts" },
-  { id: "claims", label: "Claims", ja: "立場・主張", color: "#f2a96d", key: "claims" },
-  { id: "issues", label: "Issues", ja: "主要な論点", color: "#f26d6d", key: "issues" },
-  { id: "international", label: "International", ja: "国際比較", color: "#6df2a1", key: "international" },
-  { id: "sources", label: "Sources", ja: "情報源", color: "#9a97a8", key: "sources" },
+  { id: "points", label: "議論されている主なポイント", ja: "議論のポイント", color: "#7dd3c8", key: "overview" },
+  { id: "timeline", label: "発端と経過（歴史的事実）", ja: "発端と経過", color: "#9b8fd4", key: "timeline" },
+  { id: "facts-claims", label: "確認された事実と立場", ja: "事実と立場", color: "#6db3f2", key: "facts" },
+  { id: "international", label: "各国との比較", ja: "各国比較", color: "#6df2a1", key: "international" },
+  { id: "sources", label: "参照した情報源・一次資料", ja: "情報源", color: "#9a97a8", key: "sources" },
 ] as const;
+
 
 type SectionKey = typeof SECTIONS[number]["key"];
 
@@ -129,9 +128,9 @@ export default async function TopicPage({ params }: Props) {
                 className="section-dot"
                 style={{ background: section.color }}
               />
-              <span className="section-label">{section.label}</span>
-              <span className="section-title">{section.ja}</span>
+              <h2 className="section-title" style={{ fontSize: "1.1rem", fontWeight: 600 }}>{section.label}</h2>
             </div>
+
             <div
               className="md-content"
               dangerouslySetInnerHTML={{

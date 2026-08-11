@@ -123,9 +123,43 @@ def extract_topics_from_essay(
         return []
 
 
-# ==============================
-# 新規トピックファイルの自動作成
-# ==============================
+def generate_initial_topic_content(title: str, description: str, keywords: list[str], model_name: str) -> dict[str, str]:
+    """新規トピック追加時に、学術・公的・ファクトベースの初期Markdown（全記述URL付き）をGeminiで生成する"""
+    prompt = f"""
+あなたは法学・政治学・社会問題の調査専門アシスタントです。
+新規に追跡を開始する論点「{title}」（説明: {description}、キーワード: {', '.join(keywords)}）について、
+客観的な事実（Fact）と公的文書・学術論文・公式判例等のURLをベースとした初期ドキュメントを作成してください。
+
+【絶対ルール】
+1. AI独自の私見や「〜という懸念がある」といった作文・解釈は一切書かないこと。
+2. 実際に起きている出来事、制定された法律、判例、公的調査、学術的指摘のみを事実として記述すること。
+3. 出来事やポイントのすべての項目に、参照元・一次資料となる実在するURL（例: `https://kokkai.ndl.go.jp/`, `https://www.courts.go.jp/`, `https://elaws.e-gov.go.jp/` など）を必ず [出典: 名前](URL) の形式で付与すること。
+
+【出力フォーマット】
+以下のJSON形式でのみ出力してください。他の装飾テキストは一切含めないでください。
+
+{{
+  "overview": "### 📌 実際に議論されている主なポイント\\n\\n- **[ポイント名]**\\n  [具体的な事実説明]\\n  [出典: 資料名](https://...)\\n\\n...",
+  "timeline": "### 📜 発端と経過（歴史的事実）\\n\\n- **YYYY-MM-DD**: [最初の出来事・原点・法案成立等の事実]\\n  [出典: 公式議事録/判例等](https://...)\\n\\n...",
+  "facts": "### 💬 確認された事実と主な立場\\n\\n#### 確認された事実（Fact）\\n- [法的規定・数値データ等]\\n  [出典: 官報/e-Gov](https://...)\\n\\n#### 主な立場（Claims）\\n- **[立場名]**: [発言・公約・意見書の要旨]\\n  [出典: 公式議事録/意見書](https://...)\\n",
+  "international": "### 🌐 各国との比較\\n\\n- **[国名]**: [制度や対応の事実]\\n  [出典: 公式資料](https://...)\\n",
+  "sources": "### 🔗 参照した情報源・一次資料\\n\\n- [国会議事録検索システム](https://kokkai.ndl.go.jp/)\\n- [e-Gov 法令検索](https://elaws.e-gov.go.jp/)\\n- [最高裁判所 裁判例情報](https://www.courts.go.jp/)\\n"
+}}
+"""
+    model = genai.GenerativeModel(model_name)
+    try:
+        response = model.generate_content(
+            prompt,
+            generation_config=genai.GenerationConfig(
+                response_mime_type="application/json",
+                temperature=0.2,
+            ),
+        )
+        return json.loads(response.text)
+    except Exception as e:
+        print(f"初期コンテンツ生成エラー: {e}")
+        return {}
+
 
 def create_topic_files(topic_data: dict) -> Path | None:
     slug = topic_data.get("id")
@@ -138,21 +172,24 @@ def create_topic_files(topic_data: dict) -> Path | None:
         return None
 
     topic_dir.mkdir(parents=True, exist_ok=True)
+    title = topic_data.get("title", slug)
+    description = topic_data.get("description", "")
+    keywords = topic_data.get("keywords", [title])
 
     # 1. topic.yaml の作成
     config = {
         "id": slug,
-        "title": topic_data.get("title", slug),
+        "title": title,
         "slug": slug,
-        "description": topic_data.get("description", ""),
+        "description": description,
         "status": "active",
         "priority": "normal",
-        "keywords": topic_data.get("keywords", [topic_data.get("title")]),
+        "keywords": keywords,
         "use_shared_sources": True,
         "rss_feeds_primary": [
             {
                 "type": "ndl_api",
-                "keyword": topic_data.get("ndl_keyword", topic_data.get("title"))
+                "keyword": topic_data.get("ndl_keyword", title)
             }
         ],
         "rss_feeds": [],
@@ -163,13 +200,19 @@ def create_topic_files(topic_data: dict) -> Path | None:
     with open(topic_dir / "topic.yaml", "w", encoding="utf-8") as f:
         yaml.safe_dump(config, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
 
-    # 2. 空のMarkdownファイルの作成
+    # 2. 初期コンテンツの生成（全記述URL付き）
+    print(f"AIによる初期コンテンツ（歴史・背景・ファクト調査）を生成中: {title}")
+    initial_content = generate_initial_topic_content(title, description, keywords, "gemini-3.5-flash")
+
     files = ["overview.md", "timeline.md", "facts.md", "claims.md", "issues.md", "international.md", "sources.md"]
     for file in files:
-        (topic_dir / file).write_text("", encoding="utf-8")
+        key = file.replace(".md", "")
+        text = initial_content.get(key, "")
+        (topic_dir / file).write_text(text, encoding="utf-8")
 
     print(f"新トピックファイルを生成しました: {topic_dir}")
     return topic_dir
+
 
 
 # ==============================
