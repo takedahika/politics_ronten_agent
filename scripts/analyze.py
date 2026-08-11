@@ -258,9 +258,22 @@ def extract_updates(
                 temperature=0.2,
             ),
         )
-        return json.loads(response.text)
+        cleaned_text = response.text.strip()
+        if cleaned_text.startswith("```json"):
+            cleaned_text = cleaned_text[7:]
+        elif cleaned_text.startswith("```"):
+            cleaned_text = cleaned_text[3:]
+        if cleaned_text.endswith("```"):
+            cleaned_text = cleaned_text[:-3]
+        cleaned_text = cleaned_text.strip()
+        
+        return json.loads(cleaned_text)
     except Exception as e:
         print(f"  [EXTRACTION ERROR] {topic['title']}: {e}")
+        try:
+            print(f"  [DEBUG] Response text was:\n{response.text}")
+        except NameError:
+            pass
         return None
 
 

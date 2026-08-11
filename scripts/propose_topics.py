@@ -18,6 +18,7 @@ import httpx
 import yaml
 import feedparser
 import google.generativeai as genai
+import google.generativeai.client as client_mod
 from pathlib import Path
 from datetime import datetime, timezone
 from github import Github
@@ -153,18 +154,40 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
 }}
 
 """
-    # Google Search Groundingツールを有効化
-    tool = genai.protos.Tool(google_search=genai.protos.Tool.GoogleSearch())
-    model = genai.GenerativeModel(model_name, tools=[tool])
-    try:
-        response = model.generate_content(
-            prompt,
-            generation_config=genai.GenerationConfig(
-                response_mime_type="application/json",
-                temperature=0.2,
-            ),
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY が設定されていません")
+
+    # Google Search Groundingツールを有効化 (SDKのバグ回避のためraw_clientを使用)
+
+    # REST転送を使用して設定（gRPCがブロックされるのを回避するため）
+    genai.configure(api_key=api_key, transport="rest")
+    raw_client = client_mod.get_default_generative_client()
+
+    raw_model_name = model_name if model_name.startswith("models/") else f"models/{model_name}"
+
+    request = genai.protos.GenerateContentRequest(
+        model=raw_model_name,
+        contents=[
+            genai.protos.Content(
+                parts=[genai.protos.Part(text=prompt)]
+            )
+        ],
+        tools=[
+            genai.protos.Tool(
+                google_search=genai.protos.Tool.GoogleSearch()
+            )
+        ],
+        generation_config=genai.protos.GenerationConfig(
+            response_mime_type="application/json",
+            temperature=0.2,
         )
-        return json.loads(response.text)
+    )
+
+    try:
+        response = raw_client.generate_content(request)
+        text_content = response.candidates[0].content.parts[0].text
+        return json.loads(text_content)
     except Exception as e:
         raise RuntimeError(
             f"Google Search Groundingを使用した初期コンテンツ生成に失敗しました。\n"

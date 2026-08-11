@@ -17,6 +17,8 @@ import time
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from dateutil import parser as dateutil_parser
+import google.generativeai as genai
+import google.generativeai.client as client_mod
 
 
 # ==============================
@@ -157,20 +159,18 @@ def fetch_kokkai_records(keyword: str, max_records: int = 10, days_back: int = 3
 # Web 検索（Gemini Google Search Grounding）
 # ==============================
 
-def search_via_gemini_grounding(topic_title: str, keywords: list[str], model_name: str = "gemini-3.5-flash") -> list[dict]:
+def search_via_gemini_grounding(topic_title: str, keywords: list[str], model_name: str = "gemini-1.5-flash") -> list[dict]:
     """GeminiのGoogle Search Groundingを使って、主要新聞社のサイトから最新情報を検索する"""
-    try:
-        import google.generativeai as genai
-    except ImportError:
-        print("  [ERROR] google-generativeai がインストールされていません")
-        return []
+
 
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         print("  [WARNING] GEMINI_API_KEY が設定されていないため、Gemini検索をスキップします")
         return []
 
-    genai.configure(api_key=api_key)
+    # REST転送を使用して設定（gRPCがブロックされるのを回避するため）
+    genai.configure(api_key=api_key, transport="rest")
+    raw_client = client_mod.get_default_generative_client()
 
     # 検索対象ドメインを主要新聞社に限定
     domains = [
@@ -186,7 +186,7 @@ def search_via_gemini_grounding(topic_title: str, keywords: list[str], model_nam
 
     prompt = f"""あなたは政治・社会問題のニュースを収集する有能なリサーチアシスタントです。
 
-テーマ「{topic_title}」（キーワード: {", ".join(keywords)}）に関する、過去30日以内の最新ニュースや報道記事をGoogle検索してください。
+テーマ「{topic_title}」（キーワード: {", ".join(keywords)}）に関する、過去30日以内に報じられた最新のニュースや報道記事をGoogle検索してください。
 検索の際は、必ず以下の主要ニュースサイトのいずれかから情報を取得してください：
 朝日新聞 (asahi.com)、読売新聞 (yomiuri.co.jp)、日本経済新聞 (nikkei.com)、毎日新聞 (mainichi.jp)、産経新聞 (sankei.com)、NHK (nhk.or.jp)、共同通信 (47news.jp)
 
@@ -207,18 +207,30 @@ JSONフォーマット（※コードブロック等の余計な装飾は付け�
 検索キーワードの例: ({topic_title} OR {keywords[0] if keywords else ""}) ({domain_query})
 """
 
-    tool = genai.protos.Tool(google_search=genai.protos.Tool.GoogleSearch())
-    model = genai.GenerativeModel(model_name, tools=[tool])
+    raw_model_name = model_name if model_name.startswith("models/") else f"models/{model_name}"
+
+    request = genai.protos.GenerateContentRequest(
+        model=raw_model_name,
+        contents=[
+            genai.protos.Content(
+                parts=[genai.protos.Part(text=prompt)]
+            )
+        ],
+        tools=[
+            genai.protos.Tool(
+                google_search=genai.protos.Tool.GoogleSearch()
+            )
+        ],
+        generation_config=genai.protos.GenerationConfig(
+            response_mime_type="application/json",
+            temperature=0.2,
+        )
+    )
 
     try:
-        response = model.generate_content(
-            prompt,
-            generation_config=genai.GenerationConfig(
-                response_mime_type="application/json",
-                temperature=0.2,
-            ),
-        )
-        data = json.loads(response.text)
+        response = raw_client.generate_content(request)
+        text_content = response.candidates[0].content.parts[0].text
+        data = json.loads(text_content)
         results = []
         for item in data:
             url_val = item.get("url", "")
