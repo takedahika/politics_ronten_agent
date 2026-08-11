@@ -310,64 +310,60 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
         overview_path.write_text(new_content, encoding="utf-8")
         changed = True
 
-    # --- timeline.md: 新しいイベントを追加（出典リンク必須） ---
+    # --- timeline.md: 新しいイベントを追加（URL必須・新フォーマット統一） ---
     if updates.get("new_events"):
         timeline_path = topic_path / "timeline.md"
-        existing = timeline_path.read_text(encoding="utf-8") if timeline_path.exists() else "## タイムライン\n\n"
+        existing = timeline_path.read_text(encoding="utf-8") if timeline_path.exists() else "### 📜 発端と経過（歴史的事実）\n\n"
 
         new_entries = []
         for event in updates["new_events"]:
             source_url = event.get("source_url", "")
-            source_name = event.get("source_name", source_url or "出典URL不明")
+            source_name = event.get("source_name", "出典")
+            title = event.get("title", "")
+            desc = event.get("description", "")
+            date_str = event.get("date", "日付不明")
 
-            # 出典URLがない場合は警告（スキップはしない）
+            # 出典URLがない場合は絶対に追加しない（ファクトベース厳守）
             if not source_url:
-                print(f"  [WARNING] Eventに出典URLなし: {event.get('title', '')[:40]}")
+                print(f"  [SKIPPED] 出典URLがないためEventを除外: {title[:40]}")
+                continue
 
-            source_text = _source_link(source_url, source_name) if source_url else "*(出典URL不明)*"
+            source_text = _source_link(source_url, source_name)
+            content_text = f"{title}: {desc}" if desc and desc != title else title
+            entry = f"- **{date_str}**: {content_text} ({source_text})\n"
 
-            entry = (
-                f"### {event.get('date', '日付不明')} — {event.get('title', '')}\n\n"
-                f"{event.get('description', '')}\n\n"
-                f"> 出典: {source_text}\n"
-            )
-            if event.get("title", "") not in existing:
+            if title not in existing and content_text not in existing:
                 new_entries.append(entry)
 
         if new_entries:
-            header = "## タイムライン\n\n"
-            body = existing.replace(header, "", 1)
-            timeline_path.write_text(
-                header + "\n---\n\n".join(new_entries) + "\n---\n\n" + body,
-                encoding="utf-8",
-            )
+            timeline_path.write_text(existing.rstrip() + "\n" + "".join(new_entries), encoding="utf-8")
             changed = True
 
-    # --- facts.md: 新しいファクト（出典ハイパーリンク必須） ---
+    # --- facts.md: 新しいファクト（URL必須） ---
     if updates.get("new_facts"):
         facts_path = topic_path / "facts.md"
-        existing = facts_path.read_text(encoding="utf-8") if facts_path.exists() else "## Facts（確認された事実）\n\n"
+        existing = facts_path.read_text(encoding="utf-8") if facts_path.exists() else "### 💬 確認された事実と主な立場\n\n#### 確認された事実（Fact）\n\n"
 
         new_entries = []
         for fact in updates["new_facts"]:
             stmt = fact.get("statement", "")
             source_url = fact.get("source_url", "")
-            source_name = fact.get("source_name", None)
+            source_name = fact.get("source_name", "出典")
 
             if not source_url:
-                print(f"  [WARNING] Factに出典URLなし: {stmt[:60]}")
-                # 出典なしFactは追加しない（仕様上の制約）
+                print(f"  [SKIPPED] 出典URLがないためFactを除外: {stmt[:60]}")
                 continue
 
-            source_text = _source_link(source_url, source_name or "出典")
-            entry = f"- {stmt} {source_text}\n"
+            source_text = _source_link(source_url, source_name)
+            entry = f"- {stmt} ({source_text})\n"
 
             if stmt not in existing:
                 new_entries.append(entry)
 
         if new_entries:
-            facts_path.write_text(existing + "\n" + "".join(new_entries), encoding="utf-8")
+            facts_path.write_text(existing.rstrip() + "\n" + "".join(new_entries), encoding="utf-8")
             changed = True
+
 
     # --- claims.md: 新しいClaim（出典ハイパーリンク必須） ---
     if updates.get("new_claims"):
