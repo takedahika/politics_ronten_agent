@@ -126,7 +126,6 @@ def extract_topics_from_essay(
         contents=[genai.protos.Content(parts=[genai.protos.Part(text=prompt)])],
         tools=[genai.protos.Tool(google_search=genai.protos.Tool.GoogleSearch())],
         generation_config=genai.protos.GenerationConfig(
-            response_mime_type="application/json",
             temperature=0.2,
         )
     )
@@ -134,10 +133,23 @@ def extract_topics_from_essay(
     try:
         response = raw_client.generate_content(request)
         text_content = response.candidates[0].content.parts[0].text
-        return json.loads(text_content)
+        cleaned_text = text_content.strip()
+        if cleaned_text.startswith("```json"):
+            cleaned_text = cleaned_text[7:]
+        elif cleaned_text.startswith("```"):
+            cleaned_text = cleaned_text[3:]
+        if cleaned_text.endswith("```"):
+            cleaned_text = cleaned_text[:-3]
+        cleaned_text = cleaned_text.strip()
+        
+        return json.loads(cleaned_text)
     except Exception as e:
         print(f"Geminiでのトピック抽出エラー: {e}")
-        return []
+        try:
+            print(f"Raw response: {text_content}")
+        except:
+            pass
+        raise RuntimeError("トピック抽出に失敗しました") from e
 
 
 def generate_initial_topic_content(title: str, description: str, keywords: list[str], model_name: str) -> dict[str, str]:
@@ -425,7 +437,12 @@ def main():
         model_name = config.get("analysis", {}).get("model", "gemini-3.5-flash")
 
         # Topic抽出
-        proposed_topics = extract_topics_from_essay(essay_title, essay_content, existing_slugs, model_name)
+        try:
+            proposed_topics = extract_topics_from_essay(essay_title, essay_content, existing_slugs, model_name)
+        except Exception as e:
+            print(f"トピック抽出処理中に致命的なエラーが発生しました: {e}")
+            return
+
         if not proposed_topics:
             print("エッセイから新しいTopicは抽出されませんでした。")
             save_processed_essay(essay_hash)
