@@ -349,9 +349,12 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
                 new_entries.append(entry)
 
         if new_entries:
-            if existing.startswith(header):
-                body = existing[len(header):]
-                timeline_path.write_text(header + "".join(new_entries) + body, encoding="utf-8")
+            match = re.search(r"###\s*📜\s*発端と経過（歴史的事実）\s*\n+", existing)
+            if match:
+                idx = match.end()
+                body_before = existing[:idx]
+                body_after = existing[idx:]
+                timeline_path.write_text(body_before + "".join(new_entries) + body_after, encoding="utf-8")
             else:
                 timeline_path.write_text(header + "".join(new_entries) + existing, encoding="utf-8")
             changed = True
@@ -379,9 +382,12 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
                 new_entries.append(entry)
 
         if new_entries:
-            if existing.startswith(header):
-                body = existing[len(header):]
-                facts_path.write_text(header + "".join(new_entries) + body, encoding="utf-8")
+            match = re.search(r"####\s*確認された事実\s*（Fact）\s*\n+", existing)
+            if match:
+                idx = match.end()
+                body_before = existing[:idx]
+                body_after = existing[idx:]
+                facts_path.write_text(body_before + "".join(new_entries) + body_after, encoding="utf-8")
             else:
                 facts_path.write_text(header + "".join(new_entries) + existing, encoding="utf-8")
             changed = True
@@ -461,11 +467,7 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
 # メイン
 # ==============================
 
-def main() -> None:
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print("ERROR: GEMINI_API_KEY が設定されていません")
-        sys.exit(1)
+
 
 def main():
     try:
