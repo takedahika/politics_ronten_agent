@@ -46,9 +46,9 @@ def get_changed_files() -> list[str]:
 def build_pr_body(results: dict) -> str:
     now = datetime.now(tz=timezone.utc).strftime("%Y年%m月%d日 %H:%M UTC")
     lines = [
-        "## 🤖 AI による自動更新提案",
+        "## 情報更新サマリー",
         "",
-        f"**実行日時**: {now}",
+        f"**更新日時**: {now}",
         "",
         "---",
         "",
@@ -79,14 +79,14 @@ def build_pr_body(results: dict) -> str:
         "### レビュー方法",
         "",
         "1. **Files changed** タブで変更内容を確認",
-        "2. 問題なければ **Merge pull request** でApprove",
-        "3. 不要な場合は **Close pull request** でReject",
+        "2. 問題なければ **Merge pull request** で承認",
+        "3. 不要な場合は **Close pull request** で保留",
         "",
-        "> このPRはシステムによって自動生成されました。",
         "> マージすると自動的にWebサイトが更新されます。",
     ])
 
     return "\n".join(lines)
+
 
 
 # ==============================
@@ -156,7 +156,8 @@ def main() -> None:
 
     # 要約タイトルを生成
     summaries = [v["summary"] for v in results.values() if v.get("changed") and v.get("summary")]
-    pr_title = f"[AI更新] {summaries[0][:60]}" if summaries else f"[AI更新] {timestamp}"
+    today_str = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
+    pr_title = f"{summaries[0][:60]}" if summaries else f"情報更新 ({today_str})"
 
     pr_body = build_pr_body(results)
 

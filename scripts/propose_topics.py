@@ -210,23 +210,23 @@ def propose_via_github(topic_dir: Path, topic_title: str, essay_title: str) -> b
         g = Github(token)
         repo = g.get_repo(repo_name)
 
-        pr_title = f"[論点提案] エッセイから『{topic_title}』の追跡を提案"
+        pr_title = f"論点追加提案: 『{topic_title}』"
         pr_body = f"""
-## 🤖 AI による新規論点（Topic）の自動提案
+## 📌 新規論点の追跡提案: {topic_title}
 
-ニュースレターエッセイ **「{essay_title}」** から、新しく継続追跡すべき社会的・政治的な問いを検出しました。
+ニュースレターエッセイ **「{essay_title}」** より、新しい論点として継続追跡することを提案します。
 
-### 📌 提案トピック: {topic_title}
-- **フォルダ**: `topics/{slug}/`
-- **概要**: {topic_dir.name}
+- **トピック名**: {topic_title}
+- **設定フォルダ**: `topics/{slug}/`
 
-この論点の追跡を開始（マージ）すると、翌朝の自動スケジュールから**国会議事録API**および**NHK等のニュースフィード**の自動巡回と情報蓄積が自動的に開始されます。
+この変更をマージすると、国会議事録APIおよびニュースフィードからの自動情報蓄積が開始されます。
 
 ---
 ### レビュー方法
-1. 提案内容に問題なければ **Merge pull request** をクリック（自動的に追跡開始）
-2. 不要な場合は **Close pull request** で拒否（変更は破棄されます）
+1. 追跡を開始する場合は **Merge pull request** をクリック
+2. 保留・見送る場合は **Close pull request** をクリック
 """
+
 
         pr = repo.create_pull(
             title=pr_title,

@@ -60,15 +60,16 @@ jobs:
             COLOR=3092790
             DESCRIPTION="新しい情報は見つかりませんでした。"
           elif [ -f /tmp/pr_info.json ]; then
-            STATUS="🤖 更新案が届いています"
+            STATUS="新しい情報更新案が届いています"
             COLOR=16766720
             PR_TITLE=$(jq -r '.title' /tmp/pr_info.json)
             PR_URL=$(jq -r '.url' /tmp/pr_info.json)
-            DESCRIPTION="新しい更新提案が届きました！\n\n**PR件名:**\n[$PR_TITLE]($PR_URL)\n\nGitHub上で内容を確認し、マージまたはクローズを行ってください。"
+            DESCRIPTION="情報更新の提案が作成されました。\n\n**内容:**\n[$PR_TITLE]($PR_URL)\n\nGitHub上で確認し、マージまたはクローズを行ってください。"
           elif [ -f /tmp/analysis_results.json ]; then
-            STATUS="🤖 更新案が届いています"
+            STATUS="新しい情報更新案が届いています"
             COLOR=16766720
-            DESCRIPTION="Pull Request を確認して消込やクローズを行ってください。"
+            DESCRIPTION="Pull Request を確認して承認や保留を行ってください。"
+
           else
             STATUS="⚠️ 処理完了（ステータス不明）"
             COLOR=16776960
