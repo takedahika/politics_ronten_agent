@@ -1,0 +1,19 @@
+id: citizen-political-participation
+title: 市民の政治参加と政治的無関心
+slug: citizen-political-participation
+description: 日常生活における市民の政治への関与や、選挙時以外の政治的関心の維持、政治的無関心の解消に向けた主権者教育や啓発活動のあり方に関する議論。
+status: active
+priority: normal
+keywords:
+- 政治的無関心
+- 主権者教育
+- 政治参加
+- 投票率
+use_shared_sources: true
+rss_feeds_primary:
+- type: ndl_api
+  keyword: 主権者教育
+rss_feeds: []
+related_countries:
+- JP
+created_at: '2026-08-11'
