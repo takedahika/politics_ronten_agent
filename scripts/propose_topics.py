@@ -162,13 +162,15 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
 【Google検索グラウンディングの使用について】
 1. あなたにはGoogle検索ツールが提供されています。生成を行う前に、この論点に関する事実関係、背景、学術論文、判例、公的調査を検索してください。
 2. 検索の際は、特に日本の大学・研究機関（site:ac.jp）、政府・省庁・自治体（site:go.jp）、または信頼性の高い主要ニュース機関の一次資料を優先的に検索・参照してください。
-3. 記述するすべての事実・出来事の項目について、あなたが検索結果から【実際に参照した本物のURL】を必ず `[出典: 資料名・サイト名](URL)` の形式で付与してください。
-4. URLの捏造（ハルシネーション）は絶対に禁止します。必ず実在するURLのみを使用してください。
+3. 【禁止事項】Wikipedia（wikipedia.org）や個人のブログ、特定の弁護士会・活動団体の意見書などを「事実」として絶対に参照・引用しないでください。事実の出典は、必ず政府機関・公的機関・裁判所・または主要報道機関（新聞社・NHK等）に限定してください。
+4. 記述するすべての事実・出来事の項目について、あなたが検索結果から【実際に参照した本物のURL】を必ず `[出典: 資料名・サイト名](URL)` の形式で付与してください。
+5. URLの捏造（ハルシネーション）は絶対に禁止します。必ず実在するURLのみを使用してください。
 
 【絶対ルール】
-1. AI独自の私見や「〜という懸念がある」といった作文・解釈は一切書かないこと。
-2. 実際に起きている出来事、制定された法律、判例、公的調査、学術的指摘のみを事実として記述すること。
-3. タイムライン（timeline）は、最新の出来事が一番上（降順 / 新しい順）に来るように並べること。
+1. 実際に起きている出来事、制定された法律、判例、公的調査、学術的指摘のみを事実として記述すること。
+2. 「AIがまとめました」「私が提案します」などのAI自身についての言及や挨拶は一切含めないこと。
+3. タイムライン（timeline）の日付は、必ず「実際にその出来事が起こった日（法案成立日、判決日、声明発表日など）」を記載すること。「そのニュース記事がWebに配信された日」ではないことに強く注意してください。
+4. タイムラインは、最新の出来事が一番上（降順 / 新しい順）に来るように並べること。
 
 【出力フォーマット】
 以下のJSON形式でのみ出力してください。他の装飾テキストは一切含めないでください。
@@ -208,7 +210,6 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
             )
         ],
         generation_config=genai.protos.GenerationConfig(
-            response_mime_type="application/json",
             temperature=0.2,
         )
     )
@@ -216,7 +217,15 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
     try:
         response = raw_client.generate_content(request)
         text_content = response.candidates[0].content.parts[0].text
-        return json.loads(text_content)
+        cleaned_text = text_content.strip()
+        if cleaned_text.startswith("```json"):
+            cleaned_text = cleaned_text[7:]
+        elif cleaned_text.startswith("```"):
+            cleaned_text = cleaned_text[3:]
+        if cleaned_text.endswith("```"):
+            cleaned_text = cleaned_text[:-3]
+        cleaned_text = cleaned_text.strip()
+        return json.loads(cleaned_text)
     except Exception as e:
         raise RuntimeError(
             f"Google Search Groundingを使用した初期コンテンツ生成に失敗しました。\n"
