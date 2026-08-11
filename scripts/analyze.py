@@ -310,10 +310,11 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
         overview_path.write_text(new_content, encoding="utf-8")
         changed = True
 
-    # --- timeline.md: 新しいイベントを追加（URL必須・新フォーマット統一） ---
+    # --- timeline.md: 新しいイベントを追加（最新順・一番上・URL必須） ---
     if updates.get("new_events"):
         timeline_path = topic_path / "timeline.md"
-        existing = timeline_path.read_text(encoding="utf-8") if timeline_path.exists() else "### 📜 発端と経過（歴史的事実）\n\n"
+        header = "### 📜 発端と経過（歴史的事実）\n\n"
+        existing = timeline_path.read_text(encoding="utf-8") if timeline_path.exists() else header
 
         new_entries = []
         for event in updates["new_events"]:
@@ -323,7 +324,6 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
             desc = event.get("description", "")
             date_str = event.get("date", "日付不明")
 
-            # 出典URLがない場合は絶対に追加しない（ファクトベース厳守）
             if not source_url:
                 print(f"  [SKIPPED] 出典URLがないためEventを除外: {title[:40]}")
                 continue
@@ -336,13 +336,18 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
                 new_entries.append(entry)
 
         if new_entries:
-            timeline_path.write_text(existing.rstrip() + "\n" + "".join(new_entries), encoding="utf-8")
+            if existing.startswith(header):
+                body = existing[len(header):]
+                timeline_path.write_text(header + "".join(new_entries) + body, encoding="utf-8")
+            else:
+                timeline_path.write_text(header + "".join(new_entries) + existing, encoding="utf-8")
             changed = True
 
-    # --- facts.md: 新しいファクト（URL必須） ---
+    # --- facts.md: 新しいファクト（最新順・一番上・URL必須） ---
     if updates.get("new_facts"):
         facts_path = topic_path / "facts.md"
-        existing = facts_path.read_text(encoding="utf-8") if facts_path.exists() else "### 💬 確認された事実と主な立場\n\n#### 確認された事実（Fact）\n\n"
+        header = "### 💬 確認された事実と主な立場\n\n#### 確認された事実（Fact）\n\n"
+        existing = facts_path.read_text(encoding="utf-8") if facts_path.exists() else header
 
         new_entries = []
         for fact in updates["new_facts"]:
@@ -361,8 +366,13 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
                 new_entries.append(entry)
 
         if new_entries:
-            facts_path.write_text(existing.rstrip() + "\n" + "".join(new_entries), encoding="utf-8")
+            if existing.startswith(header):
+                body = existing[len(header):]
+                facts_path.write_text(header + "".join(new_entries) + body, encoding="utf-8")
+            else:
+                facts_path.write_text(header + "".join(new_entries) + existing, encoding="utf-8")
             changed = True
+
 
 
     # --- claims.md: 新しいClaim（出典ハイパーリンク必須） ---

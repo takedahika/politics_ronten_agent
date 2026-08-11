@@ -134,17 +134,19 @@ def generate_initial_topic_content(title: str, description: str, keywords: list[
 1. AI独自の私見や「〜という懸念がある」といった作文・解釈は一切書かないこと。
 2. 実際に起きている出来事、制定された法律、判例、公的調査、学術的指摘のみを事実として記述すること。
 3. 出来事やポイントのすべての項目に、参照元・一次資料となる実在するURL（例: `https://kokkai.ndl.go.jp/`, `https://www.courts.go.jp/`, `https://elaws.e-gov.go.jp/` など）を必ず [出典: 名前](URL) の形式で付与すること。
+4. タイムライン（timeline）は、最新の出来事が一番上（降順 / 新しい順）に来るように並べること。
 
 【出力フォーマット】
 以下のJSON形式でのみ出力してください。他の装飾テキストは一切含めないでください。
 
 {{
   "overview": "### 📌 実際に議論されている主なポイント\\n\\n- **[ポイント名]**\\n  [具体的な事実説明]\\n  [出典: 資料名](https://...)\\n\\n...",
-  "timeline": "### 📜 発端と経過（歴史的事実）\\n\\n- **YYYY-MM-DD**: [最初の出来事・原点・法案成立等の事実]\\n  [出典: 公式議事録/判例等](https://...)\\n\\n...",
+  "timeline": "### 📜 発端と経過（歴史的事実）\\n\\n- **YYYY-MM-DD**: [直近の出来事・法案成立等の事実]\\n  [出典: 公式議事録/判例等](https://...)\\n\\n- **YYYY-MM-DD**: [過去の出来事・原点]\\n  [出典: 公式議事録/判例等](https://...)\\n",
   "facts": "### 💬 確認された事実と主な立場\\n\\n#### 確認された事実（Fact）\\n- [法的規定・数値データ等]\\n  [出典: 官報/e-Gov](https://...)\\n\\n#### 主な立場（Claims）\\n- **[立場名]**: [発言・公約・意見書の要旨]\\n  [出典: 公式議事録/意見書](https://...)\\n",
   "international": "### 🌐 各国との比較\\n\\n- **[国名]**: [制度や対応の事実]\\n  [出典: 公式資料](https://...)\\n",
   "sources": "### 🔗 参照した情報源・一次資料\\n\\n- [国会議事録検索システム](https://kokkai.ndl.go.jp/)\\n- [e-Gov 法令検索](https://elaws.e-gov.go.jp/)\\n- [最高裁判所 裁判例情報](https://www.courts.go.jp/)\\n"
 }}
+
 """
     model = genai.GenerativeModel(model_name)
     try:
