@@ -1,0 +1,22 @@
+### 📜 発端と経過（歴史的事実）
+
+- **2026-08-13**: 「国旗の損壊等の処罰に関する法律」が施行される。
+  [出典: 衆議院](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFypsgfsEHtLU5YxaH19dsD7s0aYcZjvNWh9aDVM6w6QuzmZ9BMhpDXPH8Qz1-vhi7tH0hd1FYZdENFrRPMPg8qxGtUb947sZ4Y4eG0-f8HRLGpM1RUp8y7JwednzrzRBkeKNMIQEA3LACH49vWBk0NXBFz8uYztu-ykUxwVMAJswUejcCOyMWwrH4x)
+
+- **2026-07-24**: 「国旗の損壊等の処罰に関する法律」が公布される（令和8年法律第69号）。
+  [出典: 衆議院](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFypsgfsEHtLU5YxaH19dsD7s0aYcZjvNWh9aDVM6w6QuzmZ9BMhpDXPH8Qz1-vhi7tH0hd1FYZdENFrRPMPg8qxGtUb947sZ4Y4eG0-f8HRLGpM1RUp8y7JwednzrzRBkeKNMIQEA3LACH49vWBk0NXBFz8uYztu-ykUxwVMAJswUejcCOyMWwrH4x)
+
+- **2026-07-17**: 参議院本会議において、自民、日本維新の会、国民民主、参政の4党などの賛成多数により「国旗の損壊等の処罰に関する法律案」が可決、成立。
+  [出典: 参議院](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF4wWdRMmqoP0tZJmzDR4bUVI4R53cW4HCDhRrkR4F3Jy5UKLkaNy09Mpm1-XyfVximsqG9zUi0OW3t1CyaUiYkd5swDeFoIHdzOZ46bvJXHlqdKEmjJQgiaqObaTtn1654fWgbVhr9MokHngNhujKr5dMmT3CE8AdM_30RQFaPzLJP)
+
+- **2026-07-14**: 参議院内閣委員会において、参考人質疑が行われ、憲法学者や法学者らが法案の違憲性や妥当性について意見を陳述。
+  [出典: 日本テレビ](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFEQLBJJ2wrTpmCavUsoWhVGHdlV3adeDHBnJj7eyTQjqmH01Xo6cAi4E95cUqFXfKGIF26WFlvUPbSII2UJmcePuHnGRP50HgvGaOzt2Gl97pDO2qkyMeydd2POnKeyiSo)
+
+- **2026-06-30**: 衆議院本会議において、共同提出した国民民主党、参政党らを含む全野党が欠席する中、法案が可決。
+  [出典: 公明党](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEAdy03l7Ey8MwVOC6OzRe4JKqqKC9J72TYC9RI6v2DSKhuWUNd3oaCianOxKhBcZmwDosRC4DcGGlPdEBRd2R9_nWxvv1ghR_JrwCFV1i3x9O1WHsyWMVW7WX8bih0ykM-wRYZVF9ZsRRlnoYTN0qh2OzW6xC0WrnL56gJ5krxkOtwq_UVWVT8r6FM2i-ex_7hDHHJ2NGF0qZQBFWclnm8EvhKyV9h7ZoU8trGScpvo_MBb9ucCnFGPQi_d_vexfqD962ruWs=)
+
+- **2026-06-16**: 自由民主党、日本維新の会、国民民主党、参政党の4党が、共同提案の議員立法として「国旗の損壊等の処罰に関する法律案」を衆議院に提出。
+  [出典: 日本テレビ](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHUs8CWJq1kG5kVZdrXiyNMDZXUbAZNrpoiz3akkPRwRBjH6DYLLQzLQQhWSDdR6HAfKbrSvTKuMWk9w5wi6dU4v-tSLCQL96AepoYS2j3ierQYr-22d3_rsU5vUzhodcH9)
+
+- **1999-07-21**: 第145回国会衆議院内閣委員会において、国旗国歌法案の審議中、自国の国旗損壊罪の創設や外国国章損壊罪との整合性について議論が行われる。
+  [出典: 国会議事録検索システム](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG3T-UkjpH3w_767UPypB-ooPDReTdgB9eb96GtkMkROO-Y-eS9uYCoYMUoHlUIH5ZvTqvNytWYRur7Cgq5EzXK1jHer2kJ6GcWnptX20Qu-BV08AoRDQVDlHGyqGoZcVGxOMDalSeR9pJLPxP9o-6wlSw8z5cieYk=)
