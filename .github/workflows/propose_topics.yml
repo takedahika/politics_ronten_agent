@@ -58,8 +58,12 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          # 提案結果が存在するかを判定
-          if [ -f /tmp/pr_info.json ]; then
+          if [ -f /tmp/error_info.json ]; then
+            STATUS="❌ AI・処理エラー"
+            COLOR=16711680
+            ERR_MSG=$(jq -r '.error' /tmp/error_info.json)
+            DESCRIPTION="処理中にエラーが発生しました。\n\n**エラー詳細:**\n\`\`\`\n$ERR_MSG\n\`\`\`"
+          elif [ -f /tmp/pr_info.json ]; then
             STATUS="💡 新しい論点が提案されました"
             COLOR=16766720
             PR_TITLE=$(jq -r '.title' /tmp/pr_info.json)
@@ -70,6 +74,7 @@ jobs:
             COLOR=3092790
             DESCRIPTION="最新エッセイから、新しい論点の提案はありませんでした（すでに追跡中、または該当なし）。"
           fi
+
 
           DATE=$(date '+%Y年%m月%d日 %H:%M UTC')
           REPO_URL="https://github.com/${{ github.repository }}"

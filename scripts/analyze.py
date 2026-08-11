@@ -448,86 +448,97 @@ def main() -> None:
         print("ERROR: GEMINI_API_KEY が設定されていません")
         sys.exit(1)
 
-    genai.configure(api_key=api_key)
-    relevance_model = genai.GenerativeModel(RELEVANCE_MODEL)
-    extraction_model = genai.GenerativeModel(EXTRACTION_MODEL)
+def main():
+    try:
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY 環境変数が設定されていません")
 
-    # 収集済みドキュメントを読み込む
-    docs_path = "/tmp/collected_documents.json"
-    if not Path(docs_path).exists():
-        print("ERROR: /tmp/collected_documents.json が見つかりません。collect.py を先に実行してください")
+        genai.configure(api_key=api_key)
+        relevance_model = genai.GenerativeModel(RELEVANCE_MODEL)
+        extraction_model = genai.GenerativeModel(EXTRACTION_MODEL)
+
+        # 収集済みドキュメントを読み込む
+        docs_path = "/tmp/collected_documents.json"
+        if not Path(docs_path).exists():
+            raise FileNotFoundError("/tmp/collected_documents.json が見つかりません。collect.py を先に実行してください")
+
+        with open(docs_path, encoding="utf-8") as f:
+            all_documents: dict[str, list[dict]] = json.load(f)
+
+        # Topic を読み込む
+        topics_dir = Path("topics")
+        topics = []
+        for topic_dir in sorted(topics_dir.iterdir()):
+            config_file = topic_dir / "topic.yaml"
+            if config_file.exists():
+                with open(config_file, encoding="utf-8") as f:
+                    config = yaml.safe_load(f)
+                config["_dir"] = str(topic_dir)
+                topics.append(config)
+
+        results = {}
+
+        for topic in topics:
+            slug = topic["slug"]
+            if topic.get("status") != "active":
+                continue
+            if slug not in all_documents:
+                continue
+
+            docs = all_documents[slug]
+            print(f"\n[ANALYZE] {topic['title']} ({slug})")
+            print(f"  収集ドキュメント数: {len(docs)}")
+
+            # Step 1: Relevance フィルタ
+            relevant = filter_relevant_documents(topic, docs, relevance_model)
+            print(f"  関連ドキュメント数: {len(relevant)}")
+
+            if not relevant:
+                print("  → 更新なし")
+                results[slug] = {"changed": False, "summary": "関連する新情報なし"}
+                continue
+
+            # Step 2: 現在の状態を読み込む
+            current_state = load_topic_state(topic["_dir"])
+
+            # Step 3: 情報抽出
+            updates = extract_updates(topic, relevant, current_state, extraction_model)
+            if not updates:
+                results[slug] = {"changed": False, "summary": "抽出失敗"}
+                continue
+
+            # Step 4: Markdown 更新
+            changed = update_markdown_files(topic["_dir"], updates)
+            print(f"  変更あり: {changed}")
+            print(f"  要約: {updates.get('summary_of_changes', '')}")
+
+            results[slug] = {
+                "changed": changed,
+                "summary": updates.get("summary_of_changes", ""),
+                "events": len(updates.get("new_events", [])),
+                "facts": len(updates.get("new_facts", [])),
+                "claims": len(updates.get("new_claims", [])),
+            }
+
+        # 結果を保存
+        with open("/tmp/analysis_results.json", "w", encoding="utf-8") as f:
+            json.dump(results, f, ensure_ascii=False, indent=2)
+
+        any_changed = any(v.get("changed") for v in results.values())
+        print(f"\n完了: 変更あり={any_changed}")
+
+        if not any_changed:
+            Path("/tmp/no_changes").touch()
+
+    except Exception as e:
+        error_msg = f"analyze.py 実行エラー: {str(e)}"
+        print(f"\n[CRITICAL ERROR] {error_msg}")
+        with open("/tmp/error_info.json", "w", encoding="utf-8") as f:
+            json.dump({"error": error_msg, "step": "analyze.py"}, f, ensure_ascii=False)
         sys.exit(1)
-
-    with open(docs_path, encoding="utf-8") as f:
-        all_documents: dict[str, list[dict]] = json.load(f)
-
-    # Topic を読み込む
-    topics_dir = Path("topics")
-    topics = []
-    for topic_dir in sorted(topics_dir.iterdir()):
-        config_file = topic_dir / "topic.yaml"
-        if config_file.exists():
-            with open(config_file, encoding="utf-8") as f:
-                config = yaml.safe_load(f)
-            config["_dir"] = str(topic_dir)
-            topics.append(config)
-
-    results = {}
-
-    for topic in topics:
-        slug = topic["slug"]
-        if topic.get("status") != "active":
-            continue
-        if slug not in all_documents:
-            continue
-
-        docs = all_documents[slug]
-        print(f"\n[ANALYZE] {topic['title']} ({slug})")
-        print(f"  収集ドキュメント数: {len(docs)}")
-
-        # Step 1: Relevance フィルタ
-        relevant = filter_relevant_documents(topic, docs, relevance_model)
-        print(f"  関連ドキュメント数: {len(relevant)}")
-
-        if not relevant:
-            print("  → 更新なし")
-            results[slug] = {"changed": False, "summary": "関連する新情報なし"}
-            continue
-
-        # Step 2: 現在の状態を読み込む
-        current_state = load_topic_state(topic["_dir"])
-
-        # Step 3: 情報抽出
-        updates = extract_updates(topic, relevant, current_state, extraction_model)
-        if not updates:
-            results[slug] = {"changed": False, "summary": "抽出失敗"}
-            continue
-
-        # Step 4: Markdown 更新
-        changed = update_markdown_files(topic["_dir"], updates)
-        print(f"  変更あり: {changed}")
-        print(f"  要約: {updates.get('summary_of_changes', '')}")
-
-        results[slug] = {
-            "changed": changed,
-            "summary": updates.get("summary_of_changes", ""),
-            "events": len(updates.get("new_events", [])),
-            "facts": len(updates.get("new_facts", [])),
-            "claims": len(updates.get("new_claims", [])),
-        }
-
-    # 結果を保存
-    with open("/tmp/analysis_results.json", "w", encoding="utf-8") as f:
-        json.dump(results, f, ensure_ascii=False, indent=2)
-
-    any_changed = any(v.get("changed") for v in results.values())
-    print(f"\n完了: 変更あり={any_changed}")
-
-    # 変更がなければ exit code 0 だが、GitHub Actions 側でスキップ判定
-    if not any_changed:
-        # 変更なしを示すファイルを作成
-        Path("/tmp/no_changes").touch()
 
 
 if __name__ == "__main__":
     main()
+

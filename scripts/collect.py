@@ -48,7 +48,7 @@ def load_topics() -> list[dict]:
 # RSS 収集
 # ==============================
 
-def fetch_rss(url: str, max_age_days: int = 7) -> list[dict]:
+def fetch_rss(url: str, max_age_days: int = 14) -> list[dict]:
     """RSS フィードを取得し、最新 max_age_days 日以内の記事を返す"""
     try:
         feed = feedparser.parse(url, agent="RontenNoGenzaichi/1.0")

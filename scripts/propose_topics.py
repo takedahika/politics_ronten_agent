@@ -257,36 +257,34 @@ def propose_via_github(topic_dir: Path, topic_title: str, essay_title: str) -> b
 # ==============================
 
 def main():
-    config = load_config()
+    try:
+        config = load_config()
 
-    gemini_key = os.environ.get("GEMINI_API_KEY")
-    if not gemini_key:
-        print("GEMINI_API_KEY が設定されていません。")
-        return
-    genai.configure(api_key=gemini_key)
+        gemini_key = os.environ.get("GEMINI_API_KEY")
+        if not gemini_key:
+            raise ValueError("GEMINI_API_KEY 環境変数が設定されていません")
+        genai.configure(api_key=gemini_key)
 
-    essay_title: str = ""
-    essay_url: str = ""
-    essay_content: str = ""
+        essay_title: str = ""
+        essay_url: str = ""
+        essay_content: str = ""
 
-    # ==============================
-    # 入力ソースの判定（優先順位順）
-    # ==============================
+        # ==============================
+        # 入力ソースの判定（優先順位順）
+        # ==============================
 
-    article_url = os.environ.get("ARTICLE_URL", "").strip()
-    article_content = os.environ.get("ARTICLE_CONTENT", "").strip()  # GASから直接本文を渡す用
+        article_url = os.environ.get("ARTICLE_URL", "").strip()
+        article_content = os.environ.get("ARTICLE_CONTENT", "").strip()  # GASから直接本文を渡す用
 
-    if article_url:
-        # 【手動実行 or GAS経由】記事URLが渡された場合 → 直接フェッチ
-        print(f"記事URLから本文を取得中: {article_url}")
-        try:
+        if article_url:
+            # 【手動実行 or GAS経由】記事URLが渡された場合 → 直接フェッチ
+            print(f"記事URLから本文を取得中: {article_url}")
             import re
             resp = httpx.get(article_url, timeout=20, follow_redirects=True,
                              headers={"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)"})
             resp.raise_for_status()
-            # HTMLから本文っぽいテキストを雑に抜き出す
+            # HTMLから本文っぽいテキストを抜き出す
             html = resp.text
-            # scriptタグ・styleタグを除去してテキスト化
             text = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", html, flags=re.DOTALL)
             text = re.sub(r"<[^>]+>", " ", text)
             text = re.sub(r"\s+", " ", text).strip()
@@ -296,56 +294,58 @@ def main():
             title_match = re.search(r"<title[^>]*>(.*?)</title>", html, re.IGNORECASE | re.DOTALL)
             essay_title = title_match.group(1).strip() if title_match else article_url
             print(f"取得成功: 「{essay_title}」")
-        except Exception as e:
-            print(f"URL取得失敗: {e}")
+
+        elif article_content:
+            # 【GAS経由・本文直接渡し】メール本文がそのまま渡された場合
+            print("GASから渡されたメール本文を使用します。")
+            article_title_line = os.environ.get("ARTICLE_TITLE", "").strip()
+            essay_title = article_title_line or "（タイトル不明）"
+            essay_url = os.environ.get("ARTICLE_ORIGINAL_URL", "").strip() or f"substack-email-{hashlib.md5(article_content[:100].encode()).hexdigest()}"
+            essay_content = article_content[:6000]
+
+        else:
+            print("処理する記事が指定されていません。")
+            print("  - 手動実行: GitHub Actions の 'Run workflow' でARTICLE_URLを入力してください")
+            print("  - 自動実行: GASからARTICLE_CONTENTを渡してください")
             return
 
-    elif article_content:
-        # 【GAS経由・本文直接渡し】メール本文がそのまま渡された場合
-        print("GASから渡されたメール本文を使用します。")
-        article_title_line = os.environ.get("ARTICLE_TITLE", "").strip()
-        essay_title = article_title_line or "（タイトル不明）"
-        essay_url = os.environ.get("ARTICLE_ORIGINAL_URL", "").strip() or f"substack-email-{hashlib.md5(article_content[:100].encode()).hexdigest()}"
-        essay_content = article_content[:6000]
+        essay_hash = hashlib.md5(essay_url.encode("utf-8")).hexdigest()
+        processed_essays = load_processed_essays()
 
-    else:
-        print("処理する記事が指定されていません。")
-        print("  - 手動実行: GitHub Actions の 'Run workflow' でARTICLE_URLを入力してください")
-        print("  - 自動実行: GASからARTICLE_CONTENTを渡してください")
-        return
+        if essay_hash in processed_essays:
+            print(f"エッセイ 「{essay_title}」 はすでに処理済みです。")
+            return
 
-    essay_hash = hashlib.md5(essay_url.encode("utf-8")).hexdigest()
-    processed_essays = load_processed_essays()
+        print(f"最新のエッセイを分析中: 「{essay_title}」")
+        existing_slugs = get_existing_slugs()
+        model_name = config.get("analysis", {}).get("model", "gemini-3.5-flash")
 
-    if essay_hash in processed_essays:
-        print(f"エッセイ 「{essay_title}」 はすでに処理済みです。")
-        return
-
-    print(f"最新のエッセイを分析中: 「{essay_title}」")
-    existing_slugs = get_existing_slugs()
-    model_name = config.get("analysis", {}).get("model", "gemini-3.5-flash")
-
-    # Topic抽出
-    proposed_topics = extract_topics_from_essay(essay_title, essay_content, existing_slugs, model_name)
-    if not proposed_topics:
-        print("エッセイから新しいTopicは抽出されませんでした。")
-        # 処理済みとしてマーク（何回も同じエッセイを分析しないようにする）
-        save_processed_essay(essay_hash)
-        return
-
-    print(f"AIが {len(proposed_topics)} 件のトピック案を抽出しました。")
-
-    # 提案処理
-    for topic_data in proposed_topics:
-        topic_dir = create_topic_files(topic_data)
-        if topic_dir:
-            # 処理済みエッセイとして保存（コミットに含める）
+        # Topic抽出
+        proposed_topics = extract_topics_from_essay(essay_title, essay_content, existing_slugs, model_name)
+        if not proposed_topics:
+            print("エッセイから新しいTopicは抽出されませんでした。")
             save_processed_essay(essay_hash)
-            # PRを作成
-            propose_via_github(topic_dir, topic_data.get("title", ""), essay_title)
-            # 一度に複数PRを作ると競合するため、1回の実行につき1件のみ処理
-            break
+            return
+
+        print(f"AIが {len(proposed_topics)} 件のトピック案を抽出しました。")
+
+        # 提案処理
+        for topic_data in proposed_topics:
+            topic_dir = create_topic_files(topic_data)
+            if topic_dir:
+                save_processed_essay(essay_hash)
+                propose_via_github(topic_dir, topic_data.get("title", ""), essay_title)
+                break
+
+    except Exception as e:
+        error_msg = f"propose_topics.py 実行エラー: {str(e)}"
+        print(f"\n[CRITICAL ERROR] {error_msg}")
+        with open("/tmp/error_info.json", "w", encoding="utf-8") as f:
+            json.dump({"error": error_msg, "step": "propose_topics.py"}, f, ensure_ascii=False)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
+    main()
+
     main()

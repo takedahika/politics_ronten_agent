@@ -50,8 +50,12 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          # 分析結果を読み込む
-          if [ -f /tmp/no_changes ]; then
+          if [ -f /tmp/error_info.json ]; then
+            STATUS="❌ AI・処理エラー"
+            COLOR=16711680
+            ERR_MSG=$(jq -r '.error' /tmp/error_info.json)
+            DESCRIPTION="処理中にエラーが発生しました。\n\n**エラー詳細:**\n\`\`\`\n$ERR_MSG\n\`\`\`"
+          elif [ -f /tmp/no_changes ]; then
             STATUS="✅ 更新なし"
             COLOR=3092790
             DESCRIPTION="新しい情報は見つかりませんでした。"
@@ -66,9 +70,9 @@ jobs:
             COLOR=16766720
             DESCRIPTION="Pull Request を確認して消込やクローズを行ってください。"
           else
-            STATUS="⚠️ 処理エラー"
-            COLOR=16711680
-            DESCRIPTION="処理中にエラーが発生しました。GitHub Actionsログを確認してください。"
+            STATUS="⚠️ 処理完了（ステータス不明）"
+            COLOR=16776960
+            DESCRIPTION="処理が完了しましたが、明示的な結果ファイルが出力されませんでした。"
           fi
 
           DATE=$(date '+%Y年%m月%d日 %H:%M UTC')
@@ -88,3 +92,4 @@ jobs:
                 \"footer\": { \"text\": \"論点の現在地 Bot\" }
               }]
             }"
+
