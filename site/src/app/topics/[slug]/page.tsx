@@ -173,8 +173,6 @@ export default async function TopicPage({ params }: Props) {
                 textDecoration: "none",
                 transition: "opacity 0.2s"
               }}
-              onMouseOver={(e) => e.currentTarget.style.opacity = "0.8"}
-              onMouseOut={(e) => e.currentTarget.style.opacity = "1"}
             >
               <span style={{ fontSize: "1.1rem" }}>💡</span>
               新しいニュース・一次資料を送信する
