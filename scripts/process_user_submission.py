@@ -46,7 +46,7 @@ def process_submission():
     if not api_key:
         raise ValueError("GEMINI_API_KEY is not set.")
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-1.5-pro')
+    model = genai.GenerativeModel('gemini-3.5-flash')
     prompt = f"""あなたは客観的で中立な「論点の現在地」の編集者です。
 現在、以下のMarkdown形式のトピック記事があります。
 

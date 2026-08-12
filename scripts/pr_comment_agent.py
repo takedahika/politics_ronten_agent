@@ -80,7 +80,7 @@ def main():
     if not api_key:
         raise ValueError("GEMINI_API_KEY is not set.")
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-1.5-pro')
+    model = genai.GenerativeModel('gemini-3.5-flash')
     
     prompt = f"""あなたは客観的で中立な「論点の現在地」の編集AIです。
 ユーザーからPull Requestのコメントで記事の修正指示を受けました。
