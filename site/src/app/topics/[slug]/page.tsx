@@ -157,7 +157,7 @@ export default async function TopicPage({ params }: Props) {
               以下のフォームよりソース（URL）をお寄せください。AIが内容を確認し、ページへ追記します。
             </p>
             <a
-              href={`#`} // TODO: Googleフォームの事前割り当てURLに差し替える
+              href={`https://docs.google.com/forms/d/e/1FAIpQLSdJURrMn60TCH3T7Wc4mzOncJf-R_yyWcZz_oIiWX2sASsAWQ/viewform?usp=pp_url&entry.643368226=${slug}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{
