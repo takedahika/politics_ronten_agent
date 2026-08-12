@@ -28,7 +28,17 @@ jobs:
             return pr.data.head.ref;
           result-encoding: string
 
-      - name: Checkout Repository
+      - name: Checkout Default Branch (To get scripts)
+        uses: actions/checkout@v4
+        with:
+          path: main_repo
+
+      - name: Backup Scripts
+        run: |
+          cp main_repo/scripts/pr_comment_agent.py /tmp/pr_comment_agent.py
+          cp main_repo/scripts/requirements.txt /tmp/requirements.txt
+
+      - name: Checkout PR Branch
         uses: actions/checkout@v4
         with:
           ref: ${{ steps.pr_details.outputs.result }}
@@ -42,7 +52,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install -r scripts/requirements.txt
+          pip install -r /tmp/requirements.txt
 
       - name: Run AI PR Comment Agent
         env:
@@ -52,4 +62,4 @@ jobs:
           COMMENT_BODY: ${{ github.event.comment.body }}
           COMMENT_ID: ${{ github.event.comment.id }}
         run: |
-          python scripts/pr_comment_agent.py
+          python /tmp/pr_comment_agent.py
