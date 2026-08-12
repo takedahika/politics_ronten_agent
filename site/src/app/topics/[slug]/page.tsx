@@ -152,9 +152,9 @@ export default async function TopicPage({ params }: Props) {
           </div>
           <div style={{ background: "var(--bg-card)", padding: "1.5rem", borderRadius: "8px", border: "1px solid var(--border)" }}>
             <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "1.25rem" }}>
-              このページは、公的機関の発表や報道機関の一次資料をもとに自動更新されています。<br />
-              未掲載の重要なニュース、事実の誤り、各団体の新しいスタンスの発表などがありましたら、
-              以下のフォームよりソース（URL）をお寄せください。AIが内容を確認し、ページへ追記します。
+              このページは、公的機関の発表や報道をもとに自動更新されています。<br />
+              もし未掲載のニュース、事実の誤り、新しいスタンスの発表などがあれば、
+              以下のフォームからニュースのURLをお寄せください。提供いただいた情報は内容を確認後、ページへ追記されます。
             </p>
             <a
               href={`https://docs.google.com/forms/d/e/1FAIpQLSdJURrMn60TCH3T7Wc4mzOncJf-R_yyWcZz_oIiWX2sASsAWQ/viewform?usp=pp_url&entry.643368226=${slug}`}
@@ -175,7 +175,7 @@ export default async function TopicPage({ params }: Props) {
               }}
             >
               <span style={{ fontSize: "1.1rem" }}>💡</span>
-              新しいニュース・一次資料を送信する
+              新しいニュース・情報ソースを提供する
             </a>
           </div>
         </section>
@@ -188,8 +188,8 @@ export default async function TopicPage({ params }: Props) {
             <span className="section-title">変更履歴</span>
           </div>
           <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", lineHeight: "1.8" }}>
-            このページの変更履歴はGitHubで確認できます。
-            すべての更新は自動提案として作成され、人間が承認した後に公開されます。
+            ページの変更履歴はすべて公開されています。
+            公的機関や大手報道の情報を自動で収集し、最後は必ず人間が内容を確認した上で公開される仕組みです。
           </p>
           <a
             href={`https://github.com/takedahika/politics_ronten_agent/commits/main/topics/${slug}`}

@@ -66,7 +66,9 @@ export async function getTopicData(slug: string): Promise<TopicData | null> {
   const readSection = async (filename: string): Promise<string> => {
     const filepath = path.join(topicDir, filename);
     if (!fs.existsSync(filepath)) return "";
-    const raw = fs.readFileSync(filepath, "utf-8");
+    let raw = fs.readFileSync(filepath, "utf-8");
+    // Next.js側のセクションヘッダーとの重複を防ぐため、最初の見出し行（# または ## など）を削除する
+    raw = raw.replace(/^\s*#+\s+.*(\r?\n|$)/m, "");
     return await markdownToHtml(raw);
   };
 
