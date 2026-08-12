@@ -2,8 +2,7 @@ import os
 import sys
 import requests
 from bs4 import BeautifulSoup
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 
 def fetch_url_content(url):
     try:
@@ -43,7 +42,11 @@ def process_submission():
     print(f"Fetching content from: {news_url}")
     url_content = fetch_url_content(news_url)
     
-    client = genai.Client()
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise ValueError("GEMINI_API_KEY is not set.")
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('gemini-1.5-pro')
     prompt = f"""あなたは客観的で中立な「論点の現在地」の編集者です。
 現在、以下のMarkdown形式のトピック記事があります。
 
@@ -78,10 +81,10 @@ def process_submission():
 2. 文章は「だ・である調」で知的なトーンを維持すること。ただし、高校三年生（18歳）が読んでスムーズに理解できるよう、官公庁や法律の特有の難解な熟語（例：「乏しい」「属し」など）は使用を禁止し、簡潔で明瞭な平易な言葉に翻訳して記載すること。
 """
     print("Sending to Gemini...")
-    response = client.models.generate_content(
-        model='gemini-2.5-pro',
-        contents=prompt,
-        config=types.GenerateContentConfig(temperature=0.2, tools=[{"google_search": {}}])
+    response = model.generate_content(
+        prompt,
+        generation_config=genai.GenerationConfig(temperature=0.2),
+        tools=[genai.protos.Tool(google_search=genai.protos.Tool.GoogleSearch())]
     )
     
     result_text = response.text.strip()
