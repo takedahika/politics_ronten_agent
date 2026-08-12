@@ -11,3 +11,5 @@
 - **罪刑法定主義と構成要件の明確性**
   「人に著しく不快又は嫌悪の情を催させるような方法」という構成要件が極めて抽象的かつ不明確であり、憲法31条の罪刑法定主義に反するとの批判がある。これに対し法務省は、行為それ自体の客観的な態様や状況を考慮する「方法規制」であり、表現内容を考慮するものではないと説明している。
   [出典: 法務省](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG0U4XqWbQDLdallNHavFqBeiU0yFWRbIjQKt6IJv_k5m4btO2UPmqydARCcQw_pvD9A8UN88LaNUfIucFt9C0s6grSdI3hjMU_OpEKrctU41OeYM9md0GuUMrAXLjo6EIxTdysSQ==)
+
+テスト追記: この文章はテスト用です。
