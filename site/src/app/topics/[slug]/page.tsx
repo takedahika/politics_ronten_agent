@@ -143,6 +143,45 @@ export default async function TopicPage({ params }: Props) {
           </section>
         ))}
 
+        {/* コミュニティからの情報提供 CTA */}
+        <section className="topic-section" style={{ borderTop: "1px solid var(--border)", paddingTop: "2rem", paddingBottom: "2rem" }}>
+          <div className="section-header">
+            <span className="section-dot" style={{ background: "var(--gold)" }} />
+            <span className="section-label">Contribute</span>
+            <span className="section-title">情報の提供・修正提案</span>
+          </div>
+          <div style={{ background: "var(--bg-card)", padding: "1.5rem", borderRadius: "8px", border: "1px solid var(--border)" }}>
+            <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "1.25rem" }}>
+              このページは、公的機関の発表や報道機関の一次資料をもとに自動更新されています。<br />
+              未掲載の重要なニュース、事実の誤り、各団体の新しいスタンスの発表などがありましたら、
+              以下のフォームよりソース（URL）をお寄せください。AIが内容を確認し、ページへ追記します。
+            </p>
+            <a
+              href={`#`} // TODO: Googleフォームの事前割り当てURLに差し替える
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                background: "var(--text-primary)",
+                color: "var(--bg)",
+                padding: "0.75rem 1.25rem",
+                borderRadius: "4px",
+                fontSize: "0.9rem",
+                fontWeight: 500,
+                textDecoration: "none",
+                transition: "opacity 0.2s"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.opacity = "0.8"}
+              onMouseOut={(e) => e.currentTarget.style.opacity = "1"}
+            >
+              <span style={{ fontSize: "1.1rem" }}>💡</span>
+              新しいニュース・一次資料を送信する
+            </a>
+          </div>
+        </section>
+
         {/* 変更履歴へのリンク */}
         <section className="topic-section" style={{ borderTop: "1px solid var(--border)", paddingTop: "2rem" }}>
           <div className="section-header">
