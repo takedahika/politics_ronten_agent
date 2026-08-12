@@ -1,13 +1,13 @@
 ### 📌 実際に議論されている主なポイント
 
-- **マイナンバーを活用した在留資格・国籍の把握と運用の適正化**
-  政府は2026年1月に決定した「外国人の受入れ・秩序ある共生のための総合的対応策」において、生活保護制度の運用の適正化を掲げた。具体的には、マイナンバーを活用した情報連携により、受給する外国人の在留資格や国籍を確認できる仕組みの構築を進める方針である。
+- **マイナンバーを使った在留資格や国籍の確認と、ルールの見直し**
+  政府は2026年1月に、外国人をスムーズに受け入れつつ、社会のルールを守るための計画を決めた。その中で、生活保護の仕組みを正しく動かすことを目指している。具体的には、マイナンバーを使って、生活保護を受けている外国人の在留資格や国籍を簡単に確認できるシステムを作り、不正な利用を防ぐ方針である。
   [出典: 内閣官房](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFnVNpMi2fGv5LUCF08ZOvqRJxiLKy7eRdLaXvtxVIkqxwdjRE-CsDTn0S8KBWQ7bcrp11bxPgqL9q4-C7luph3gKe8KJPeb9mfdngzNdcKDxt-XSFo0U60xYWywOZ9QOvDfzDxlLNZA-ORNBN36gNojLpWkTR_hrEnRhjaWYwi0SuZiSCxX53af6ORcpSFNPJNlQ==)
 
-- **行政措置としての外国人生活保護の対象見直し**
-  生活保護法は「国民」を対象としているが、1954年の厚生省通知に基づき、永住者や定住者など一定の在留資格を持つ外国人に対して「行政措置」として生活保護に準じた保護が行われてきた。政府は、この行政措置の対象となる者の見直しや、保護の補足性の原理との関係を考慮した適正化措置の検討を進めている。
+- **「特別な対応（行政措置）」としての外国人生活保護の見直し**
+  生活保護法は「日本国民」を対象にしているが、1954年に出された厚生省（現在の厚生労働省）の通知により、永住者や定住者など、日本に長く暮らす外国人に対しては、日本人と同じように生活保護を支給する「特別な対応（行政措置）」が行われてきた。政府は、この対応の対象となる人の範囲を見直したり、自分の力や他の制度をすべて使っても足りないときに初めて生活保護が使えるという「補足性の原則」が守られているかを厳しくチェックしたりすることを検討している。
   [出典: 厚生労働省](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQErxJbdnS8-XwMOgumpZCzigdkCylgirKz995X-VQTn36f9g3zP-Fdn8nKFoYWPeCFHfKJfKE2oFWcwzBepLCo-Dipv6q8SWhci5l9pO3zwcSsOCmAaKUAlkuiAc-1yH35rGj_IIlnD_WHlljN3rNMRMfHl)
 
-- **永住許可要件の厳格化との連動**
-  出入国在留管理庁は2026年8月に「永住許可に関するガイドライン（案）」を公表し、永住許可の要件（世帯年収、年金、日本語能力など）の厳格化を進めている。これは、将来的な生活保護受給などの「公共の負担」を未然に防ぐための適正化策の一環として位置づけられている。
+- **永住許可の条件を厳しくする動きとの関係**
+  出入国在留管理庁は2026年8月に、外国人が日本にずっと住むための「永住許可」の基準を厳しくする案を発表した。世帯の年収や年金の支払い状況、日本語の能力などを厳しくチェックすることで、将来的に生活保護などの公的な支援に頼らざるを得なくなる状況を、あらかじめ防ぐ狙いがある。
   [出典: NAKA行政書士事務所](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF_txLiVGT2Bo2jsTaBZ_3PGZABljNbPEiWhca-H5cthtDXpRDrxG5xdMgFDJ0xcczlMTxc5jE0LV__-8TAW6c1kkYzXu-cCQRIwWzDHMiEIl-3E4wo82QcXTI0xgq9_29nYMORoQIyVuU7LvBPXxI8bAHX0XvZdTgm07kLHrewrVqXltIl8HDuoqmGV_Mg6JyUT6AWrQBODKOPfpHwC7PPfJSbzlhdj6kaZBKI5v0QI7R3RmaEFnyVp5qv01PhvMh4Sn2ZYnPxWRq_oJXxxSvfjMJ6vbRi9CBNkdP2mhqZPh2pAqmeKmc-RGqjB3cAPWweBV8TLVUzHB0IS3fGJzRx6mOSKqpD3JSUmClijbQK-DsViKvX6t4=)
