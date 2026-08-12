@@ -65,7 +65,13 @@ def process_submission():
 指示:
 この新しい情報（URLの内容）を評価し、信頼できる一次情報または大手報道機関のものであれば、現在の記事の適切なセクション（タイムライン、関連する事実とデータ、政党・団体のスタンスなど）に追記してください。
 - 追記する際は、客観的な事実のみを記載し、出典として提供されたURLをリンクしてください。
-- フォーマットは崩さず、記事全体を完全なMarkdownとして出力してください。
+
+【出力フォーマット】
+以下のJSONフォーマットで出力してください。装飾やJSON以外のテキストは含めないでください。
+{
+  "summary": "ニュースの内容の要約と、今回どこをどのように修正・追記したかの詳細な説明",
+  "updated_markdown": "修正後の完全なMarkdownテキスト"
+}
 
 【絶対ルール】
 1. 「AIがまとめました」「私が提案します」などのAI自身についての言及や挨拶は一切含めないこと。
@@ -78,18 +84,31 @@ def process_submission():
         config=types.GenerateContentConfig(temperature=0.2, tools=[{"google_search": {}}])
     )
     
-    new_md = response.text
-    if new_md.startswith("```markdown"):
-        new_md = new_md[11:]
-    if new_md.startswith("```"):
-        new_md = new_md[3:]
-    if new_md.endswith("```"):
-        new_md = new_md[:-3]
-    new_md = new_md.strip()
+    result_text = response.text.strip()
+    if result_text.startswith("```json"):
+        result_text = result_text[7:]
+    elif result_text.startswith("```"):
+        result_text = result_text[3:]
+    if result_text.endswith("```"):
+        result_text = result_text[:-3]
+        
+    import json
+    try:
+        output_data = json.loads(result_text.strip())
+        new_md = output_data.get("updated_markdown", current_md)
+        summary = output_data.get("summary", "要約の生成に失敗しました。")
+    except json.JSONDecodeError:
+        print("Failed to parse JSON response.")
+        new_md = current_md
+        summary = "AIからの応答が正しいJSON形式ではありませんでした。"
     
     with open(md_path, 'w', encoding='utf-8') as f:
         f.write(new_md)
-    print(f"Successfully updated {md_path}")
+        
+    with open("summary.txt", 'w', encoding='utf-8') as f:
+        f.write(summary)
+        
+    print(f"Successfully updated {md_path} and created summary.txt")
 
 if __name__ == "__main__":
     process_submission()

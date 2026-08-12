@@ -35,6 +35,17 @@ jobs:
           USER_COMMENT: ${{ github.event.client_payload.comment }}
         run: python scripts/process_user_submission.py
         
+      - name: Read Summary
+        id: read_summary
+        run: |
+          if [ -f summary.txt ]; then
+            echo "summary<<EOF" >> $GITHUB_OUTPUT
+            cat summary.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "summary=要約なし" >> $GITHUB_OUTPUT
+          fi
+          
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
@@ -44,6 +55,12 @@ jobs:
           body: |
             ユーザーからの情報提供に基づいて、AIがトピックを更新しました。
             
+            ### 📝 ニュース要約とAIの修正内容
+            ${{ steps.read_summary.outputs.summary }}
+
+            ---
+            
+            ### ℹ️ 提供された情報
             - **トピック**: `${{ github.event.client_payload.topic_slug }}`
             - **情報の種類**: `${{ github.event.client_payload.info_type }}`
             - **提供元URL**: ${{ github.event.client_payload.news_url }}
