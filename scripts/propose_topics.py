@@ -343,15 +343,22 @@ def propose_via_github(topic_dir: Path, topic_title: str, essay_title: str) -> b
 
 ニュースレターエッセイ **「{essay_title}」** より、新しい論点として継続追跡することを提案します。
 
+### 📝 トピックの概要（AI抽出）
 - **トピック名**: {topic_title}
 - **設定フォルダ**: `topics/{slug}/`
+- **概要・背景**: {topic_data.get('description', '（説明なし）')}
+- **検索キーワード**: {', '.join(topic_data.get('keywords', []))}
 
-この変更をマージすると、国会議事録APIおよびニュースフィードからの自動情報蓄積が開始されます。
+### 🔗 元情報（エッセイ）
+- [元エッセイのURLを開く]({essay_url})
 
 ---
+この変更をマージすると、国会議事録APIおよびニュースフィードからの自動情報蓄積が開始されます。
+
 ### レビュー方法
-1. 追跡を開始する場合は **Merge pull request** をクリック
-2. 保留・見送る場合は **Close pull request** をクリック
+1. **修正したい場合**: このPRのコメント欄で `@ronten-ai ここをもっと分かりやすくして` のように指示を出すと、自動で修正されます。
+2. **追跡を開始する場合**: **Merge pull request** をクリック
+3. **保留・見送る場合**: **Close pull request** をクリック
 """
 
 
