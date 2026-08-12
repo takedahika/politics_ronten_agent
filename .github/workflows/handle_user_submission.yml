@@ -1,0 +1,56 @@
+name: Handle User Submission
+
+on:
+  repository_dispatch:
+    types: [user_news_submission]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  process_submission:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+          
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install beautifulsoup4
+          
+      - name: Process submission and update Markdown
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TOPIC_SLUG: ${{ github.event.client_payload.topic_slug }}
+          INFO_TYPE: ${{ github.event.client_payload.info_type }}
+          NEWS_URL: ${{ github.event.client_payload.news_url }}
+          USER_COMMENT: ${{ github.event.client_payload.comment }}
+        run: python scripts/process_user_submission.py
+        
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "feat(content): update ${{ github.event.client_payload.topic_slug }} from user submission"
+          title: "Update: ${{ github.event.client_payload.topic_slug }} (User Submission)"
+          body: |
+            ユーザーからの情報提供に基づいて、AIがトピックを更新しました。
+            
+            - **トピック**: `${{ github.event.client_payload.topic_slug }}`
+            - **情報の種類**: `${{ github.event.client_payload.info_type }}`
+            - **提供元URL**: ${{ github.event.client_payload.news_url }}
+            - **補足コメント**: 
+              > ${{ github.event.client_payload.comment }}
+              
+            変更内容を確認し、問題なければマージしてください。
+          branch: "user-submission-${{ github.event.client_payload.topic_slug }}-${{ github.run_id }}"
+          base: main
+          labels: "user-submission, ai-generated"

@@ -1,0 +1,91 @@
+import os
+import sys
+import requests
+from bs4 import BeautifulSoup
+from google import genai
+from google.genai import types
+
+def fetch_url_content(url):
+    try:
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+        for script in soup(["script", "style", "nav", "footer", "header"]):
+            script.extract()
+        text = soup.get_text(separator='\n')
+        lines = (line.strip() for line in text.splitlines())
+        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+        text = '\n'.join(chunk for chunk in chunks if chunk)
+        return text[:10000]
+    except Exception as e:
+        print(f"Warning: Failed to fetch URL content: {e}")
+        return "ウェブページの内容を直接取得できませんでした。"
+
+def process_submission():
+    slug = os.environ.get("TOPIC_SLUG")
+    info_type = os.environ.get("INFO_TYPE", "未分類")
+    news_url = os.environ.get("NEWS_URL", "")
+    comment = os.environ.get("USER_COMMENT", "")
+    
+    if not slug or not news_url:
+        print("Error: TOPIC_SLUG and NEWS_URL are required.")
+        sys.exit(1)
+        
+    md_path = f"topics/{slug}/content.md"
+    if not os.path.exists(md_path):
+        print(f"Error: Topic file not found at {md_path}")
+        sys.exit(1)
+        
+    with open(md_path, 'r', encoding='utf-8') as f:
+        current_md = f.read()
+        
+    print(f"Fetching content from: {news_url}")
+    url_content = fetch_url_content(news_url)
+    
+    client = genai.Client()
+    prompt = f"""あなたは客観的で中立な「論点の現在地」の編集者です。
+現在、以下のMarkdown形式のトピック記事があります。
+
+【現在の記事】
+```markdown
+{current_md}
+```
+
+読者から、このトピックに関して新しい情報提供がありました。
+
+【ユーザーからの提供情報】
+- 情報の種類: {info_type}
+- URL: {news_url}
+- 補足コメント: {comment}
+
+【URLの内容（抜粋）】
+{url_content}
+
+指示:
+この新しい情報（URLの内容）を評価し、信頼できる一次情報または大手報道機関のものであれば、現在の記事の適切なセクション（タイムライン、関連する事実とデータ、政党・団体のスタンスなど）に追記してください。
+- 追記する際は、客観的な事実のみを記載し、出典として提供されたURLをリンクしてください。
+- フォーマットは崩さず、記事全体を完全なMarkdownとして出力してください。
+"""
+    print("Sending to Gemini...")
+    response = client.models.generate_content(
+        model='gemini-2.5-pro',
+        contents=prompt,
+        config=types.GenerateContentConfig(temperature=0.2, tools=[{"google_search": {}}])
+    )
+    
+    new_md = response.text
+    if new_md.startswith("```markdown"):
+        new_md = new_md[11:]
+    if new_md.startswith("```"):
+        new_md = new_md[3:]
+    if new_md.endswith("```"):
+        new_md = new_md[:-3]
+    new_md = new_md.strip()
+    
+    with open(md_path, 'w', encoding='utf-8') as f:
+        f.write(new_md)
+    print(f"Successfully updated {md_path}")
+
+if __name__ == "__main__":
+    process_submission()
