@@ -1,0 +1,7 @@
+### 🔗 参照した情報源・一次資料
+
+- [内閣官房「外国人の受入れ・秩序ある共生のための総合的対応策」](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFnVNpMi2fGv5LUCF08ZOvqRJxiLKy7eRdLaXvtxVIkqxwdjRE-CsDTn0S8KBWQ7bcrp11bxPgqL9q4-C7luph3gKe8KJPeb9mfdngzNdcKDxt-XSFo0U60xYWywOZ9QOvDfzDxlLNZA-ORNBN36gNojLpWkTR_hrEnRhjaWYwi0SuZiSCxX53af6ORcpSFNPJNlQ==)
+- [厚生労働省「上野大臣会見概要（令和8年2月3日）」](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQErxJbdnS8-XwMOgumpZCzigdkCylgirKz995X-VQTn36f9g3zP-Fdn8nKFoYWPeCFHfKJfKE2oFWcwzBepLCo-Dipv6q8SWhci5l9pO3zwcSsOCmAaKUAlkuiAc-1yH35rGj_IIlnD_WHlljN3rNMRMfHl)
+- [厚生労働省「生活保護事務におけるマイナンバー導入に関する留意事項について」](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHKguHZcA_xdg23ZWjzF1umqlQ4RU1ShvZUayo3oH7KOc01bpiAy4f9K3s_fOZXXpZftA-SJk_18EPploZXnSYjFgjw3lzLv7L-yh1WWVtpppJZa5Uo5llCtRFk-SXske3Y97m6lBTLWRiG3v7heVprGCWuyqNpKGDs)
+- [日本弁護士連合会「定住外国人生活保護申請却下事件最高裁判決に関する会長談話」](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHupY8b9OhTq1utVn2bKBxb6Obtd1SpA9qznKucwAWiVBq4yigwuP759rpK_Wvifb7sXxVCbUeilYQvND3fNcfi0Od9d9Y503QLR-SX6wLVCC3l2o2wevkr4uLoqzcqwr5eN4N_3xwc7CumQcxXuFtuStdmN0iuN7nu67k=)
+- [全国生活保護裁判連絡会「主な裁判例」](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFpcyfiVsUUR0IVehh_MlwvuC0v-JdVx9NRDvmuFP28yrT3HJpq_Gm9gmPnQnwWOgwsT9CcVEzja7DOgL3Ws3-gX3Ee-RkPiAdcxrVh8rvvwP6V3vO7hBSFYJZuLO_hWHFIsg==)
