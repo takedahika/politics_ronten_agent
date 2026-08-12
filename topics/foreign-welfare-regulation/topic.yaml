@@ -1,0 +1,21 @@
+id: foreign-welfare-regulation
+title: 外国人に対する生活保護の運用適正化と実態把握
+slug: foreign-welfare-regulation
+description: 政府が2026年1月に決定した「外国人の受入れ・秩序ある共生のための総合的対応策」に基づき、マイナンバーを活用して外国人受給者の在留資格や国籍を把握する「生活保護制度の運用の適正化」が進められている。これに対し、人道的な観点から行政措置として行われてきた外国人への生活保護を不当に制限・厳格化するものだとして、弁護士団体や支援組織から強い反対の声が上がっている。
+status: active
+priority: normal
+keywords:
+- 外国人 生活保護 運用適正化
+- 総合的対応策 生活保護 外国人
+- 外国人 生活保護 マイナンバー
+use_shared_sources: true
+rss_feeds_primary:
+- type: ndl_api
+  keyword: 外国人 生活保護
+rss_feeds: []
+related_countries:
+- JP
+created_at: '2026-08-12'
+newsletter_articles:
+- title: 「生活保護の３割は外国人」デマについて
+  url: https://poli3year.substack.com/p/f92
