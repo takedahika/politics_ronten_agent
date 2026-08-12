@@ -68,18 +68,18 @@ export default async function TopicPage({ params }: Props) {
           </p>
         </header>
 
-        {/* ニュースレターCTA — コンパクトなハイパーリンクカード */}
-        <div className="newsletter-cta animate-in">
-          <div className="newsletter-cta-inner">
-            <div className="newsletter-cta-header">
-              <span className="newsletter-cta-eyebrow">✍️ ニュースレター</span>
-            </div>
-            
-            <p className="newsletter-cta-body">
-              このトピックは、以下のニュースレターを起点に調査が開始されました。
-            </p>
+        {/* 関連エッセイ・コラムCTA */}
+        {newsletterArticles.length > 0 && (
+          <div className="newsletter-cta animate-in">
+            <div className="newsletter-cta-inner">
+              <div className="newsletter-cta-header">
+                <span className="newsletter-cta-eyebrow">✍️ 関連エッセイ・コラム</span>
+              </div>
+              
+              <p className="newsletter-cta-body">
+                このトピックは、以下の記事やエッセイでも取り上げられています。
+              </p>
 
-            {newsletterArticles.length > 0 && (
               <div className="newsletter-cta-articles">
                 {newsletterArticles.map((article) => (
                   <a
@@ -95,20 +95,20 @@ export default async function TopicPage({ params }: Props) {
                   </a>
                 ))}
               </div>
-            )}
 
-            <div className="newsletter-cta-footer">
-              <a
-                href="https://poli3year.substack.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="newsletter-cta-subscribe"
-              >
-                ニュースレターを無料購読する →
-              </a>
+              <div className="newsletter-cta-footer">
+                <a
+                  href="https://poli3year.substack.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="newsletter-cta-subscribe"
+                >
+                  ニュースレター「1年に3日だけ政治を考える」を無料購読する →
+                </a>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* セクションナビ */}
         <nav className="topic-nav" aria-label="セクションナビゲーション">
