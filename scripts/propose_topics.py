@@ -267,8 +267,8 @@ def create_topic_files(topic_data: dict, essay_title: str = "", essay_url: str =
 
     topic_dir = Path("topics") / slug
     if topic_dir.exists():
-        print(f"Topic {slug} はすでにフォルダが存在するためスキップします。")
-        return None
+        print(f"Topic {slug} はすでにフォルダが存在します。PR作成のみ再試行します。")
+        return topic_dir
 
     topic_dir.mkdir(parents=True, exist_ok=True)
     title = topic_data.get("title", slug)
@@ -328,7 +328,7 @@ def create_topic_files(topic_data: dict, essay_title: str = "", essay_url: str =
 # GitHub PRの作成
 # ==============================
 
-def propose_via_github(topic_dir: Path, topic_title: str, essay_title: str) -> bool:
+def propose_via_github(topic_dir: Path, topic_title: str, essay_title: str, topic_data: dict, essay_url: str) -> bool:
     token = os.environ.get("GITHUB_TOKEN")
     repo_name = os.environ.get("GITHUB_REPOSITORY")
     if not token or not repo_name:
@@ -498,7 +498,7 @@ def main():
             topic_dir = create_topic_files(topic_data, essay_title, essay_url, model_name)
             if topic_dir:
                 save_processed_essay(essay_hash)
-                propose_via_github(topic_dir, topic_data.get("title", ""), essay_title)
+                propose_via_github(topic_dir, topic_data.get("title", ""), essay_title, topic_data, essay_url)
                 break
 
     except Exception as e:
@@ -510,6 +510,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-
     main()
