@@ -1,0 +1,12 @@
+### 🔗 参照した情報源・一次資料
+
+- [衆議院選挙制度に関する調査会 答申](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHn6vwp5Vhk39e8IMN6Bw1bkA78_hxGQHPgvolirYvw0IN7GzbZkFXfI1ScENBuDIQe9JBO91dEl9A-ySI5A_ufYJ_ShFx0SiI4pZYXC05ShUd-Wl7oA1qcLJLvIfhX5sn7L0QJ8scGasHJ6YCDmd7lhwt2Hato6TOVfyRQztT9U3SBifLxpvLzCn0OHlipHBSj4L4=)
+- [e-Gov 法令検索（公職選挙法）](https://elaws.e-gov.go.jp/document?lawid=325AC1000000100)
+- [東洋経済オンライン](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHXlzNfnpnJTxA6xKfEKygVc2GljRjZ4xrJNwRSqF-6fqDvnke8gxE-96N2xFOCXrR8ru_mZfyabahRs79iux0hIIbPDu6wCa9-GuSBFNCHm79BcWwsyS64YdVUo8RWA1Yvirgtm_KIVA==)
+- [しんぶん赤旗](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFp2h5tjt6LkzMzVnIPUMqDwjJMT8LecvSOt6xKPh1XGegfj5t8Ob8alku7pAWbtX5OyqvjbnbXCR9RntRuWANYVLZCbH1DkNqwESAZrMiCOasOQPJ7REBRSd9vHWjYcLauk4YRa1k1sFgYXWwvkLetn7o4LUx25MM=)
+- [公明党公式ウェブサイト](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGr2dCBzO8jkqFSLbZoLF1Pmvi108aWya0Dx1jDoqKPJwzoT1Pt4fnTcEp2Q29--h9zjEnqQGzC-mUrH0J2BXktdNXGbh8X72-S_SvGD8PpMCPpioMaLZgBOD3h4K1WMjk=)
+- [社民党公式ウェブサイト](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGWgBMRE5K6YjXudaLBDrJPF8Q6ShWR8Ffevzdj-60yDmQjwZixuLd4z6Am8nuokllQBmFW2bEQYsQv-wOs3eGjXHachiE9Z8Yh5PwUwPnfbqRy0SW5T0Or)
+- [チームみらい公式ウェブサイト](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEAcJsJb0VwC-K1og1Sf611En4hHTPExbqXtv4Jgl-KBfdsh2lG0NDoUG_MaC2arUDCzvBtMMey1xlcGoQHyh8EOv0YZDN0J3Ubq9228UNVDrjDP_72U1x2uxOX1gMzlbOChf0GrmeHG08bdxqU-O8EmnCpSlBX)
+- [FNNプライムオンライン](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFHVN6KWXu0O2xrkYzzDZwyo4ZKObZi2WVBgsCzbHiT4wYq9Yj40XMLrT3TnErBMOJA0bI5S36f3LmRBAU67ovgd0qEgAIaF-nE85TobI2xeQcY_udAdZM99AlijDhN1wci)
+- [日テレNEWS NNN](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHifpv4fSwGx3Zsstl6Om0ir5yxFVGOWlSYEj-GiQ7-ews0ysl-O_56rSaS5Ie4EWZhKc_F9LJr3cnwKVSskQsecGp9uol255iK15W9OSfS9Tni6uBl4B2cvdMJwN_7Nr9T)
+- [国立国会図書館](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH5fQvJ9pErxP0F7lFS7nkP4glFnJFMDoekYrKuHBBP_B8y1TlXMDbn2_cgtq9siJahTbWB-3V7NivKfxT4PpLcSbi3U8qmVyyvQJ-A-8dnEiovAGVxr1NY90QNuEJfdB8qOCfu_V2DZ_kTQU_IFYhP6yONejSFAiGf4dw4NWE=)

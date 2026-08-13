@@ -1,0 +1,23 @@
+id: proportional-representation-reduction-debate
+title: 比例代表削減による少数派排除と大政党有利な選挙制度への懸念
+slug: proportional-representation-reduction-debate
+description: 2026年、自民党と日本維新の会は、衆議院の比例代表を45議席削減する「定数削減法案」を国会に提出した。与党側は「身を切る改革」やコスト削減、意思決定の迅速化を主張するが、野党各党や有識者からは、死票を救済し多様な民意を反映する比例代表を削減することは、少数政党や地方の声を切り捨て、与党や大政党の議席占有率を不当に高める「勝者総取り」を加速させ、民主主義の後退を招くとして強い懸念と反発が示されている。2026年7月現在、野党の猛反発や自民党内の異論もあり、法案の成立は先送りされている。
+status: active
+priority: normal
+keywords:
+- 比例代表削減
+- 定数削減法案
+- 身を切る改革
+- 少数意見の反映
+- 選挙制度改革
+use_shared_sources: true
+rss_feeds_primary:
+- type: ndl_api
+  keyword: 衆議院議員の定数削減
+rss_feeds: []
+related_countries:
+- JP
+created_at: '2026-08-13'
+newsletter_articles:
+- title: 議席定数削減って何なのか？ - ハンガリーの事例とともに考える
+  url: https://poli3year.substack.com/p/412
