@@ -1,0 +1,13 @@
+### 📌 実際に議論されている主なポイント
+
+- **比例代表の削減による大政党の支配と少数意見の切り捨て懸念**
+  2026年6月に自民党と日本維新の会が共同で提出した「衆議院議員の定数削減等に関する法律案」は、1年以内に選挙制度の話し合いで結論が出ない場合、比例代表のみを45議席減らす内容となっている。比例代表は、小選挙区に比べて投票された割合に応じて議席が配分されるため、小さな政党や多様な意見を国会に届けやすい仕組みである。これを大幅に減らすと、小選挙区で強い大政党や、特定の地域で強い政党の議席の割合がさらに高まり、少数派の意見が国政から締め出されるという懸念が指摘されている。実際、2026年2月の衆院選の結果をもとにした試算では、比例代表を45議席減らした場合、自民党と日本維新の会だけで全体の議席の8割以上を占めることになるという結果が出ている。
+  [出典: しんぶん赤旗](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF-e1KcrttBRhc7j-ENhbB5p6K4ZBhX48ArfQP-J2nA7Dao40QLBdXZgfG8FpC5vRlVWmmezM3btitW5YGRaUyyNC7EVEijFGsY2yiZLzP_l-G0ijmPW9zHo_bSSepEO4XCCK2mRWzbqw6rVe3XAZommo4dBPs9DQI=)
+
+- **「身を切る改革」による経費削減と、民主主義を維持するコストの対立**
+  推進派は、議員の数を減らすことを「身を切る改革」と呼び、国民に負担を求める前に国会自らが経費を減らす姿勢を示すべきだと主張している。一方で、反対派は、議員の数を減らすことによる財政的な効果は国の予算全体から見れば非常に小さく、それ以上に多様な民意を国政に反映させるという「民主主義を維持するためのコスト」を削ることのデメリットが大きいと主張している。2016年に衆議院議長の諮問機関がまとめた報告書でも、「現在の衆議院議員の数は、外国との比較やこれまでの歴史から見ても多いとは言えず、これを減らすはっきりとした理由や理論的な根拠は見つけにくい」と指摘されている。
+  [出典: 衆議院選挙制度に関する調査会答申 - 総務省](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH96YOdE8nqdSQLGryLXFKSQs7uqkfnylW_1EG9vvwEkURL4NhEgAlUHQ99yckMU7RbfnU4G3jAv5OiwJ-eFkoQ3OTN_WmeXAOvPG99mTjmtw1cTs92kREe9CQ1dIzxYRHZebwOOFJc)
+
+- **選挙制度を変更する手順と与野党による合意の原則**
+  選挙制度は民主主義のルールそのものであるため、特定の政党に有利なルール変更を防ぐために、これまでは与野党の幅広い合意のもとで慎重に進められてきた。しかし、今回の法案は、自民党と日本維新の会が主導し、1年以内に結論が出ない場合は比例代表を自動的に減らすという期限付きの仕組みを取り入れている。これに対し、野党側は「与党が数の力で一方的に押し付けるものであり、民主主義のルールを決める方法として不適切である」と強く反発している。
+  [出典: 東洋経済オンライン](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFH9cptBFKMpCDNRDt-BWr_6_CDdkDzGoXIsdbziqJ_0Z04lFf9Ec-bpTt0ewUJcAZo5324xN-mpZ-QdzKf1HuLifBwf0brPtryVof0Vx85obstZYfx0gFRWIhF9KhncdLjwKmiThNVoQ==)
