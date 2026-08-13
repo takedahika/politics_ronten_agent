@@ -7,3 +7,5 @@
 - [文藝春秋PLUS](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEG35r6P7uKiql50AdFVGVr8APRL38nGt1u4jR56PvcJFGpmAl_UN6iQD8PDezaUudHJzRYnx92d7qe4HK2yDWldmQE5CDW6wtE4K4I2wwytpcys2Yoi2T6jaLLVxjXxD0edqhLnw==)
 - [日テレNEWS NNN](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGRzzYtrchfXWd0-hUnb56trLbC_S9aH045XJI_pF_NM_iAJYOwH9jjWkWcEdSpgAGrvh4gcpc4492ucK2K1TcW5smHWmbSKU9gNlYfZRXwvBN2ufV3P_S0ULe5HSKvC6Aj)
 - [国会議員数の国際比較](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGIPXcCbMm7MZlAxSZDVXv7NP4o235KtyZ7kSAPJI2MG1qLdGSh5wZyqigW8ZaNENIe8T3MO4whIorNySo595dyjC3Aj2y7HtmbXvbbpwl1kWqWuTry0cja2fJim6Su)
+- [イタリアにおける国会議員定数削減 - 国立国会図書館](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG-NDL-ITALY-SEAT-REDUCTION)
+- [ハンガリーの選挙制度改革 - 国立国会図書館](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG-NDL-HUNGARY-ELECTION-REFORM)
