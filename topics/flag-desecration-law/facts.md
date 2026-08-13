@@ -1,6 +1,7 @@
 ### 💬 確認された事実と主な立場
 
 #### 確認された事実（Fact）
+- 警察庁は2026年7月24日、都道府県警に対し、国旗損壊処罰法の運用にあたって表現の自由や内心の自由を不当に侵害しないよう、組織的な検討や検察庁との緊密な連携を求める通達を出した。 ([出典](https://www.asahi.com/articles/AS7ST4G6S7STUTIL001M.html))
 - **「国旗の損壊等の処罰に関する法律」の規定**
   「人に著しく不快又は嫌悪の情を催させるような方法により、公然と国旗を損壊し、除去し、又は汚損した者」を2年以下の拘禁刑又は20万円以下の罰金に処する（第2条第1項）。また、その判断は「行為の外形、周囲の状況その他の客観的な事情を総合的に勘案して行う」とされる（第2条第2項）。
   [出典: 衆議院](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFypsgfsEHtLU5YxaH19dsD7s0aYcZjvNWh9aDVM6w6QuzmZ9BMhpDXPH8Qz1-vhi7tH0hd1FYZdENFrRPMPg8qxGtUb947sZ4Y4eG0-f8HRLGpM1RUp8y7JwednzrzRBkeKNMIQEA3LACH49vWBk0NXBFz8uYztu-ykUxwVMAJswUejcCOyMWwrH4x)

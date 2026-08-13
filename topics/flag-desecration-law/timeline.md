@@ -1,5 +1,8 @@
 ### 📜 発端と経過（歴史的事実）
 
+- **2026-07-24**: 警察庁が国旗損壊処罰法の運用に関する全国通達を出す: 国旗損壊処罰法の公布を受け、警察庁は都道府県警に対し、憲法が保障する「表現の自由」や「内心の自由」を不当に侵害しないよう、捜査時の組織的検討や検察庁との緊密な連携、慎重な法解釈と適用を求める通達を出しました。 ([出典](https://www.asahi.com/articles/AS7ST4G6S7STUTIL001M.html))
+- **2026-07-26**: 石破茂前首相が国旗損壊処罰法に否定的な見解を表明: 石破茂前首相は鳥取市内での講演において、国旗への敬意や愛国心は「刑罰によって強制するものではない」と述べ、内心の自由や表現の自由の観点から慎重であるべきだとの姿勢を強調しました。 ([出典](https://www.yomiuri.co.jp/politics/20260727-OYT1T50120/))
+- **2026-08-04**: 憲法研究者199人が国旗損壊処罰法の廃止を求める共同声明を発表: 全国の憲法研究者199人が、同法が表現の自由や内心の自由を侵害する違憲な法律であるとして、速やかな廃止を求める共同声明を発表しました。 ([出典](https://www.asahi.com/articles/AS8444G6S844UTIL002M.html))
 - **2026-08-13**: 「国旗の損壊等の処罰に関する法律」が施行される。
   [出典: 衆議院](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFypsgfsEHtLU5YxaH19dsD7s0aYcZjvNWh9aDVM6w6QuzmZ9BMhpDXPH8Qz1-vhi7tH0hd1FYZdENFrRPMPg8qxGtUb947sZ4Y4eG0-f8HRLGpM1RUp8y7JwednzrzRBkeKNMIQEA3LACH49vWBk0NXBFz8uYztu-ykUxwVMAJswUejcCOyMWwrH4x)
 

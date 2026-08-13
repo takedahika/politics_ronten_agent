@@ -1,3 +1,5 @@
+*最終更新: 2026年08月13日*
+
 ### 📌 実際に議論されている主なポイント
 
 - **保護法益と「国民感情」の刑罰保護**
@@ -13,3 +15,13 @@
   [出典: 法務省](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG0U4XqWbQDLdallNHavFqBeiU0yFWRbIjQKt6IJv_k5m4btO2UPmqydARCcQw_pvD9A8UN88LaNUfIucFt9C0s6grSdI3hjMU_OpEKrctU41OeYM9md0GuUMrAXLjo6EIxTdysSQ==)
 
 テスト追記: この文章はテスト用です。
+
+## 現在の状況
+
+「国旗損壊処罰法」の公布に伴い、警察庁が表現の自由への配慮を求める通達を出したほか、石破茂前首相による否定的な言及や、憲法研究者らによる廃止を求める共同声明など、法成立後も運用のあり方や違憲性をめぐる議論が続いています。
+
+
+## Open Questions（未解決の問い）
+
+- 警察庁の通達に基づき、実際の捜査現場において「表現の自由」や「内心の自由」への配慮がどのように担保され、どのような基準で組織的検討や検察との連携が行われるのか。
+- 自民党内で法案推進派と石破前首相のような慎重派との間で、今後の法運用や見直しをめぐる議論がどのように展開するのか。
