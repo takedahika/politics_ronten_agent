@@ -5,3 +5,6 @@
 - [法務省：国旗の損壊等の処罰に関する法律 Ｑ＆Ａ](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG0U4XqWbQDLdallNHavFqBeiU0yFWRbIjQKt6IJv_k5m4btO2UPmqydARCcQw_pvD9A8UN88LaNUfIucFt9C0s6grSdI3hjMU_OpEKrctU41OeYM9md0GuUMrAXLjo6EIxTdysSQ==)
 - [立命館大学：さんしゃ Zapping（国旗と表現の自由、思想・良心の自由）](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE8XYp5XNdu2_UNV4o4C7lo4gMKdepVYO8nkOGOueOoxrfweushcgMwLF-Jx0lPrdfcpqumOEbRJ3Xg9cNXBcIQlXgvLKSXGQPc8elx43sregudw5UH4n-ZDfcWDstIcUgi45k=)
 - [国会議事録検索システム：第145回国会 衆議院 内閣委員会 第13号](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG3T-UkjpH3w_767UPypB-ooPDReTdgB9eb96GtkMkROO-Y-eS9uYCoYMUoHlUIH5ZvTqvNytWYRur7Cgq5EzXK1jHer2kJ6GcWnptX20Qu-BV08AoRDQVDlHGyqGoZcVGxOMDalSeR9pJLPxP9o-6wlSw8z5cieYk=)
+- [朝日新聞](https://www.asahi.com/articles/AS7ST4G6S7STUTIL001M.html) `news` — 取得日: 2026年08月13日
+- [読売新聞](https://www.yomiuri.co.jp/politics/20260727-OYT1T50120/) `news` — 取得日: 2026年08月13日
+- [朝日新聞](https://www.asahi.com/articles/AS8444G6S844UTIL002M.html) `news` — 取得日: 2026年08月13日

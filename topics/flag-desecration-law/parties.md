@@ -8,3 +8,5 @@
 
 - **立憲民主党・日本共産党・れいわ新選組**: 法案に強く反対。表現の自由や思想・良心の自由を侵害し、デモなどの政治的抗議活動を萎縮させる危険性があるとして、国会審議や本会議で反対討論を行った。
   [出典: 立憲民主党](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH-hLlyoAwF7BCmFNueMVOGG77AAWjEe_s9nsr8Yjgc11yzrVkBQ--XrV_7-sKPUr6lQP05_iF2MZJVW6_xBhIvPuwOYfpvk1LTnXNh10cyAeCNHNLC9npO5VDPwN4tTcY=)
+- **自由民主党（石破茂前首相など一部議員）**: 国旗への敬意や愛国心は刑罰で強制すべきではなく、内心の自由や表現の自由の観点から法律による罰則化には慎重であるべきだという、党内の推進姿勢とは異なる慎重な立場を示している。
+  ([出典](https://www.yomiuri.co.jp/politics/20260727-OYT1T50120/))
