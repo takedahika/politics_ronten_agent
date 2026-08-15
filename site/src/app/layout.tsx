@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     default: "論点を365日追跡する",
   },
   description:
-    "人間が重要だと考えた社会的・政治的な問いをTopicとして継続的に調査し、現在の知識と議論の状態を記録するメディア。",
+    "人間が政治的な問いを起点に、関連する事実や議論を自動で収集・整理する。いま何が起きていて、どんな議論があるのか。このサイトは、議論の現在地を記録するメディアである。",
   openGraph: {
     siteName: "論点を365日追跡する",
     type: "website",
@@ -35,7 +35,7 @@ export default function RootLayout({
               </Link>
               <nav className="site-nav">
                 <Link href="/">論点一覧</Link>
-                <Link href="/newsletter">ニュースレター</Link>
+                <a href="https://ronten.theletter.jp/" target="_blank" rel="noopener noreferrer">ニュースレター</a>
                 <Link
                   href="https://github.com"
                   target="_blank"
@@ -57,9 +57,8 @@ export default function RootLayout({
                 論点を365日追跡する
               </div>
               <p className="footer-tagline">
-                人間が重要だと考えた社会的・政治的な問いを継続的に調査し、
-                現在の知識と議論の状態を記録する。
-                より良い政治的・社会的な会話のための知的インフラ。
+                人間が政治的な問いを起点に、関連する事実や議論を自動で収集・整理する。<br />
+                議論の現在地を記録するメディア。
               </p>
             </div>
           </div>

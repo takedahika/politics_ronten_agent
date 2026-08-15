@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "論点を365日追跡する",
   description:
-    "人間が重要だと考えた社会的・政治的な問いをTopicとして継続的に調査し、現在の知識と議論の状態を記録するメディア。",
+    "人間が政治的な問いを起点に、関連する事実や議論を自動で収集・整理する。いま何が起きていて、どんな議論があるのか。このサイトは、議論の現在地を記録するメディアである。",
 };
 
 const PRIORITY_LABEL: Record<string, string> = {
@@ -22,27 +22,36 @@ export default async function HomePage() {
       {/* ヒーロー */}
       <section className="home-hero">
         <div className="container">
-          <p className="home-hero-label">論点をかぞえる</p>
           <h1 className="home-hero-title">
             論点を
             <br />
             365日追跡する
           </h1>
           <p className="home-hero-desc">
-            人間が「これは重要だ」と判断した政治的・社会的な問いを起点に、
+            人間が政治的な問いを起点に、
             関連する事実や議論を自動で収集・整理する。
             <br />
             <br />
             いま何が起きていて、どんな議論があるのか。
-            このサイトは、知識の「現在地」を記録するメディアである。
+            このサイトは、議論の現在地を記録するメディアである。
           </p>
+          <div style={{ marginTop: "1.5rem" }}>
+            <a
+              href="https://ronten.theletter.jp/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="newsletter-cta-subscribe"
+            >
+              ニュースレターを読む →
+            </a>
+          </div>
         </div>
       </section>
 
       {/* Topic 一覧 */}
       <section className="home-topics-section">
         <div className="container">
-          <p className="home-section-label">追跡中のTopic — {topics.length}件</p>
+          <h2 className="home-section-label">タイムライン</h2>
 
           {topics.length === 0 ? (
             <p style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>
