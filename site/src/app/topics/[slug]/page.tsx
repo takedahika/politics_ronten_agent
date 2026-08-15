@@ -1,6 +1,7 @@
 import { getTopicData, getTopicSlugs } from "@/lib/topics";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import ExpandableHtml from "./ExpandableHtml";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -134,12 +135,16 @@ export default async function TopicPage({ params }: Props) {
               <h2 className="section-title" style={{ fontSize: "1.1rem", fontWeight: 600 }}>{section.label}</h2>
             </div>
 
-            <div
-              className="md-content"
-              dangerouslySetInnerHTML={{
-                __html: content[section.key as SectionKey] || "<p style='color:var(--text-muted);font-size:0.85rem'>情報収集中...</p>",
-              }}
-            />
+            {section.id === "timeline" ? (
+              <ExpandableHtml html={content[section.key as keyof typeof content] || "<p style='color:var(--text-muted);font-size:0.85rem'>情報収集中...</p>"} />
+            ) : (
+              <div
+                className="md-content"
+                dangerouslySetInnerHTML={{
+                  __html: content[section.key as keyof typeof content] || "<p style='color:var(--text-muted);font-size:0.85rem'>情報収集中...</p>",
+                }}
+              />
+            )}
           </section>
         ))}
 

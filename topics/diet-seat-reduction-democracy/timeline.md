@@ -17,3 +17,4 @@
 
 - **2016-01-14**: 衆議院議長の諮問機関「衆議院選挙制度に関する調査会」（座長：佐々木毅・元東京大学総長）が、定数削減の積極的な理由や理論的根拠は見出しがたいとする答申を提出した。
   [出典: 衆議院選挙制度に関する調査会答申 - 総務省](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH96YOdE8nqdSQLGryLXFKSQs7uqkfnylW_1EG9vvwEkURL4NhEgAlUHQ99yckMU7RbfnU4G3jAv5OiwJ-eFkoQ3OTN_WmeXAOvPG99mTjmtw1cTs92kREe9CQ1dIzxYRHZebwOOFJc)
+

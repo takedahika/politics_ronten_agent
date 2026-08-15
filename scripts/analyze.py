@@ -363,12 +363,39 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
         if new_entries:
             match = re.search(r"###\s*📜\s*発端と経過（歴史的事実）\s*\n+", existing)
             if match:
-                idx = match.end()
-                body_before = existing[:idx]
-                body_after = existing[idx:]
-                timeline_path.write_text(body_before + "".join(new_entries) + body_after, encoding="utf-8")
+                header = existing[:match.end()]
+                body = existing[match.end():]
             else:
-                timeline_path.write_text(header + "".join(new_entries) + existing, encoding="utf-8")
+                body = existing.replace(header, "")
+
+            # existing entries: list of tuples (date, text)
+            existing_parsed = re.findall(r"(?m)^- \*\*(\d{4}-\d{2}-\d{2})\*\*: (.*?(?=\n- \*\*|\Z))", body, re.DOTALL)
+            
+            # new entries parsing
+            new_parsed = []
+            for entry in new_entries:
+                m = re.match(r"^- \*\*(\d{4}-\d{2}-\d{2})\*\*: (.*)", entry, re.DOTALL)
+                if m:
+                    new_parsed.append((m.group(1), m.group(2)))
+            
+            # Combine and sort (newest first)
+            all_entries = existing_parsed + new_parsed
+            # Remove exact duplicates just in case
+            unique_entries = []
+            seen = set()
+            for date, text in all_entries:
+                key = (date, text.strip())
+                if key not in seen:
+                    seen.add(key)
+                    unique_entries.append((date, text))
+
+            sorted_entries = sorted(unique_entries, key=lambda x: x[0], reverse=True)
+            
+            new_body = ""
+            for date, text in sorted_entries:
+                new_body += f"- **{date}**: {text.strip()}\n\n"
+                
+            timeline_path.write_text(header + new_body, encoding="utf-8")
             changed = True
 
     # --- facts.md: 新しいファクト（最新順・一番上・URL必須） ---

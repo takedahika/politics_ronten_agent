@@ -20,3 +20,4 @@
 
 - **1954-05-08**: 厚生省（当時）が、生活に困っている外国人に対して、日本人と同じように必要な保護を行うよう求める通知を都道府県に出した。これにより、法律上の権利ではなく、政府や自治体の判断による「特別な対応（行政措置）」として、外国人への生活保護の支給が始まった。
   [出典: 厚生労働省](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHKguHZcA_xdg23ZWjzF1umqlQ4RU1ShvZUayo3oH7KOc01bpiAy4f9K3s_fOZXXpZftA-SJk_18EPploZXnSYjFgjw3lzLv7L-yh1WWVtpppJZa5Uo5llCtRFk-SXske3Y97m6lBTLWRiG3v7heVprGCWuyqNpKGDs)
+
