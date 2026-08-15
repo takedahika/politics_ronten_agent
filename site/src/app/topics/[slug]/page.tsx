@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const topic = await getTopicData(slug);
   if (!topic) return { title: "Not Found" };
   return {
-    title: `${topic.config.title} | 論点の現在地`,
+    title: `${topic.config.title} | 論点を365日追跡する`,
     description: topic.config.description,
   };
 }

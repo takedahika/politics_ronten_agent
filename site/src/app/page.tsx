@@ -3,7 +3,7 @@ import { getAllTopics } from "@/lib/topics";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "論点の現在地",
+  title: "論点を365日追跡する",
   description:
     "人間が重要だと考えた社会的・政治的な問いをTopicとして継続的に調査し、現在の知識と議論の状態を記録するメディア。",
 };
@@ -22,11 +22,11 @@ export default async function HomePage() {
       {/* ヒーロー */}
       <section className="home-hero">
         <div className="container">
-          <p className="home-hero-label">論点をいまの状態で記録する</p>
+          <p className="home-hero-label">論点をかぞえる</p>
           <h1 className="home-hero-title">
-            論点の
+            論点を
             <br />
-            現在地
+            365日追跡する
           </h1>
           <p className="home-hero-desc">
             人間が「これは重要だ」と判断した政治的・社会的な問いを起点に、
