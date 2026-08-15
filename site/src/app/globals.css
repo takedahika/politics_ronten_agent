@@ -633,6 +633,16 @@ body {
 @media (max-width: 640px) {
   .site-nav { display: none; }
   .footer-inner { flex-direction: column; }
+  
+  .topic-card {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+  .topic-card-meta {
+    grid-column: 1;
+    grid-row: auto;
+    margin-top: 0.25rem;
+  }
 }
 
 /* ==============================

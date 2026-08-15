@@ -70,13 +70,6 @@ export default async function HomePage() {
                     {topic.lastUpdated && (
                       <span>最終更新: {topic.lastUpdated}</span>
                     )}
-                    <div className="topic-card-keywords">
-                      {(topic.config.keywords ?? []).slice(0, 3).map((kw) => (
-                        <span key={kw} className="keyword-tag">
-                          {kw}
-                        </span>
-                      ))}
-                    </div>
                   </div>
                 </Link>
               ))}
