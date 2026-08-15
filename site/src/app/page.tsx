@@ -41,7 +41,7 @@ export default async function HomePage() {
       {/* Topic 一覧 */}
       <section className="home-topics-section">
         <div className="container">
-          <h2 className="home-section-label">タイムライン</h2>
+          <h2 className="home-section-label">追跡中のトピック</h2>
 
           {topics.length === 0 ? (
             <p style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>
@@ -109,8 +109,8 @@ export default async function HomePage() {
                 desc: "各テーマについて、いま何が分かっていて、どんな意見が対立しているのかを継続的に記録したページ。",
               },
               {
-                label: "自動収集・人間が確認",
-                desc: "公的機関や大手報道の一次情報を自動で収集し、最後は必ず人間が確認して公開する。すべての更新履歴は透明化されている。",
+                label: "情報の自動収集",
+                desc: "公的機関や大手報道の一次情報を自動で収集し公開する。すべての更新履歴は透明化されている。",
               },
             ].map((item) => (
               <div
