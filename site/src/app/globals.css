@@ -222,66 +222,65 @@ body {
 }
 
 /* ==============================
-   Topic カード
+   Topic リスト行
    ============================== */
 
 .topic-card {
-  display: block;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 0.5rem 1.5rem;
   text-decoration: none;
-  padding: 1.75rem 2rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-left: 2px solid transparent;
-  margin-bottom: 1px;
-  transition: background 0.15s, border-left-color 0.15s;
-  position: relative;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: opacity 0.15s;
+}
+
+.topic-card:first-child {
+  border-top: 1px solid var(--border);
 }
 
 .topic-card:hover {
-  background: var(--bg-card-hover);
-  border-left-color: var(--gold);
-}
-
-.topic-card-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
+  opacity: 0.7;
 }
 
 .topic-card-priority {
   font-family: var(--font-mono);
-  font-size: 0.58rem;
+  font-size: 0.55rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
+  margin-bottom: 0.3rem;
 }
 
 .topic-card-title {
   font-family: var(--font-sans);
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: 0.04em;
-  flex: 1;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
 }
 
 .topic-card-desc {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  line-height: 1.8;
-  margin-bottom: 1rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 0.25rem;
   font-weight: 300;
 }
 
 .topic-card-meta {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  font-size: 0.68rem;
+  gap: 0.75rem;
+  font-size: 0.62rem;
   color: var(--text-muted);
   font-family: var(--font-mono);
+  white-space: nowrap;
+  grid-column: 2;
+  grid-row: 1 / 4;
+  align-self: center;
 }
 
 .topic-card-keywords {
@@ -293,8 +292,8 @@ body {
 .keyword-tag {
   background: transparent;
   color: var(--text-muted);
-  font-size: 0.62rem;
-  padding: 0.15rem 0.5rem;
+  font-size: 0.6rem;
+  padding: 0.1rem 0.4rem;
   border: 1px solid var(--border);
   font-family: var(--font-mono);
   letter-spacing: 0.05em;
@@ -364,31 +363,35 @@ body {
 
 .topic-nav {
   display: flex;
-  gap: 0;
   flex-wrap: wrap;
-  margin-bottom: 3rem;
-  border: 1px solid var(--border);
+  gap: 0.25rem 0;
+  margin-bottom: 2.5rem;
+  padding: 0.875rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .topic-nav-item {
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
   text-decoration: none;
-  padding: 0.5rem 0.875rem;
-  font-family: var(--font-mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border-right: 1px solid var(--border);
-  transition: color 0.15s, background 0.15s;
+  font-family: var(--font-sans);
+  letter-spacing: 0.01em;
+  padding: 0.1rem 0;
+  transition: color 0.15s;
 }
 
-.topic-nav-item:last-child {
-  border-right: none;
+.topic-nav-item::after {
+  content: "　·　";
+  color: var(--border-strong);
+}
+
+.topic-nav-item:last-child::after {
+  content: "";
 }
 
 .topic-nav-item:hover {
-  color: var(--gold);
-  background: var(--gold-glow);
+  color: var(--text-primary);
 }
 
 /* ==============================
@@ -629,7 +632,6 @@ body {
 
 @media (max-width: 640px) {
   .site-nav { display: none; }
-  .topic-nav { overflow-x: auto; flex-wrap: nowrap; }
   .footer-inner { flex-direction: column; }
 }
 
