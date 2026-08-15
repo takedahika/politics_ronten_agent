@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 const SECTIONS = [
   { id: "points", label: "議論されている主なポイント", ja: "議論のポイント", color: "#7dd3c8", key: "overview" },
-  { id: "timeline", label: "発端と経過（歴史的事実）", ja: "発端と経過", color: "#9b8fd4", key: "timeline" },
+  { id: "timeline", label: "タイムライン", ja: "タイムライン", color: "#9b8fd4", key: "timeline" },
   { id: "facts-claims", label: "確認された事実と立場", ja: "事実と立場", color: "#6db3f2", key: "facts" },
   { id: "international", label: "各国との比較", ja: "各国比較", color: "#6df2a1", key: "international" },
   { id: "sources", label: "参照した情報源・一次資料", ja: "情報源", color: "#9a97a8", key: "sources" },

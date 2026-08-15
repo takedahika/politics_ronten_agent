@@ -35,16 +35,6 @@ export default async function HomePage() {
             いま何が起きていて、どんな議論があるのか。
             このサイトは、議論の現在地を記録するメディアである。
           </p>
-          <div style={{ marginTop: "1.5rem" }}>
-            <a
-              href="https://ronten.theletter.jp/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="newsletter-cta-subscribe"
-            >
-              ニュースレターを読む →
-            </a>
-          </div>
         </div>
       </section>
 
@@ -148,6 +138,24 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ニュースレター */}
+      <section style={{ borderTop: "1px solid var(--border)", padding: "3rem 0" }}>
+        <div className="container" style={{ textAlign: "center" }}>
+          <h2 style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "1rem" }}>ニュースレター</h2>
+          <p style={{ color: "var(--text-secondary)", marginBottom: "2rem", fontSize: "0.9rem" }}>
+            新しい論点や経過のまとめをメールでお届けします。
+          </p>
+          <a
+            href="https://ronten.theletter.jp/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="newsletter-cta-subscribe"
+          >
+            ニュースレターを読む →
+          </a>
         </div>
       </section>
     </>
