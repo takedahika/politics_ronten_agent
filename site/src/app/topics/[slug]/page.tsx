@@ -59,7 +59,7 @@ export default async function TopicPage({ params }: Props) {
 
         {/* ヘッダー */}
         <header className="topic-header animate-in">
-          <p className="topic-header-label">論点の現在地 / Topic</p>
+          <p className="topic-header-label">論点の現在地</p>
           <h1 className="topic-title">{topic.config.title}</h1>
           <p className="topic-meta">
             {topic.lastUpdated ? `最終更新: ${topic.lastUpdated}` : "調査中"}
@@ -147,7 +147,6 @@ export default async function TopicPage({ params }: Props) {
         <section className="topic-section" style={{ borderTop: "1px solid var(--border)", paddingTop: "2rem", paddingBottom: "2rem" }}>
           <div className="section-header">
             <span className="section-dot" style={{ background: "var(--gold)" }} />
-            <span className="section-label">Contribute</span>
             <span className="section-title">情報の提供・修正提案</span>
           </div>
           <div style={{ background: "var(--bg-card)", padding: "1.5rem", borderRadius: "8px", border: "1px solid var(--border)" }}>
@@ -184,7 +183,6 @@ export default async function TopicPage({ params }: Props) {
         <section className="topic-section" style={{ borderTop: "1px solid var(--border)", paddingTop: "2rem" }}>
           <div className="section-header">
             <span className="section-dot" style={{ background: "var(--gold)" }} />
-            <span className="section-label">Change History</span>
             <span className="section-title">変更履歴</span>
           </div>
           <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", lineHeight: "1.8" }}>

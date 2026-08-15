@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 };
 
 const PRIORITY_LABEL: Record<string, string> = {
-  high: "HIGH PRIORITY",
-  normal: "TRACKING",
-  low: "LOW PRIORITY",
+  high: "優先追跡中",
+  normal: "追跡中",
+  low: "低優先度",
 };
 
 export default async function HomePage() {
@@ -22,7 +22,7 @@ export default async function HomePage() {
       {/* ヒーロー */}
       <section className="home-hero">
         <div className="container">
-          <p className="home-hero-label">Current State of Arguments</p>
+          <p className="home-hero-label">論点をいまの状態で記録する</p>
           <h1 className="home-hero-title">
             論点の
             <br />
@@ -98,7 +98,7 @@ export default async function HomePage() {
               marginBottom: "1.5rem",
             }}
           >
-            About this project
+            このメディアについて
           </p>
           <div
             style={{
@@ -109,15 +109,15 @@ export default async function HomePage() {
           >
             {[
               {
-                label: "Newsletter",
+                label: "ニュースレター",
                 desc: "人間が書くニュースレター。ここでの「問い」が、すべての論点の出発点となる。",
               },
               {
-                label: "Topic",
+                label: "論点ページ",
                 desc: "各テーマについて、いま何が分かっていて、どんな意見が対立しているのかを継続的に記録したページ。",
               },
               {
-                label: "Automated tracking, human approved",
+                label: "自動収集・人間が確認",
                 desc: "公的機関や大手報道の一次情報を自動で収集し、最後は必ず人間が確認して公開する。すべての更新履歴は透明化されている。",
               },
             ].map((item) => (
