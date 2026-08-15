@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "論点を365日追跡する",
   description:
-    "人間が政治的な問いを起点に、関連する事実や議論を自動で収集・整理する。いま何が起きていて、どんな議論があるのか。このサイトは、議論の現在地を記録するメディアである。",
+    "人間が政治的な問いを起点に、関連する事実や議論を自動で収集・整理する。いま何が起きていて、どんな議論があるのか。このサイトは、議論の現在地を記録するメディアです。",
 };
 
 const PRIORITY_LABEL: Record<string, string> = {
@@ -33,7 +33,7 @@ export default async function HomePage() {
             <br />
             <br />
             いま何が起きていて、どんな議論があるのか。
-            このサイトは、議論の現在地を記録するメディアである。
+            このサイトは、議論の現在地を記録するメディアです。
           </p>
         </div>
       </section>
@@ -146,7 +146,7 @@ export default async function HomePage() {
         <div className="container" style={{ textAlign: "center" }}>
           <h2 style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "1rem" }}>ニュースレター</h2>
           <p style={{ color: "var(--text-secondary)", marginBottom: "2rem", fontSize: "0.9rem" }}>
-            新しい論点や経過のまとめをメールでお届けします。
+            1年に3日だけ政治を友達と語り合うための政治エッセイです。（新しい論点や経過のまとめではありません）
           </p>
           <a
             href="https://poli3year.substack.com"
