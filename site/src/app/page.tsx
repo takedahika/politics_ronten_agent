@@ -61,7 +61,11 @@ export default async function HomePage() {
                     {PRIORITY_LABEL[topic.config.priority] ?? "TRACKING"}
                   </p>
                   <h2 className="topic-card-title">{topic.config.title}</h2>
-                  <p className="topic-card-desc">{topic.config.description}</p>
+                  <p className="topic-card-desc">
+                    {topic.config.description?.length > 45
+                      ? topic.config.description.slice(0, 45) + "…"
+                      : topic.config.description}
+                  </p>
                   <div className="topic-card-meta">
                     {topic.lastUpdated && (
                       <span>最終更新: {topic.lastUpdated}</span>
