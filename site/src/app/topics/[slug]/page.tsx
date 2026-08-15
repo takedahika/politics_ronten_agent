@@ -60,7 +60,7 @@ export default async function TopicPage({ params }: Props) {
 
         {/* ヘッダー */}
         <header className="topic-header animate-in">
-          <p className="topic-header-label">論点の現在地</p>
+          <p className="topic-header-label">論点を365日追跡する</p>
           <h1 className="topic-title">{topic.config.title}</h1>
           <p className="topic-meta">
             {topic.lastUpdated ? `最終更新: ${topic.lastUpdated}` : "調査中"}

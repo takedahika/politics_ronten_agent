@@ -149,7 +149,7 @@ export default async function HomePage() {
             新しい論点や経過のまとめをメールでお届けします。
           </p>
           <a
-            href="https://ronten.theletter.jp/"
+            href="https://poli3year.substack.com"
             target="_blank"
             rel="noopener noreferrer"
             className="newsletter-cta-subscribe"

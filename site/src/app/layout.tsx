@@ -35,7 +35,7 @@ export default function RootLayout({
               </Link>
               <nav className="site-nav">
                 <Link href="/">論点一覧</Link>
-                <a href="https://ronten.theletter.jp/" target="_blank" rel="noopener noreferrer">ニュースレター</a>
+                <a href="https://poli3year.substack.com" target="_blank" rel="noopener noreferrer">ニュースレター</a>
                 <Link
                   href="https://github.com"
                   target="_blank"
