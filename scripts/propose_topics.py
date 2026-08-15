@@ -317,6 +317,32 @@ def create_topic_files(topic_data: dict, essay_title: str = "", essay_url: str =
         key = file.replace(".md", "")
         text = initial_content.get(key, "")
         if text:
+            if key == "timeline":
+                # タイムラインを降順ソート
+                import re
+                lines = text.splitlines()
+                header = []
+                body = []
+                in_header = True
+                for line in lines:
+                    if in_header:
+                        if line.startswith("- **") or re.match(r"^\d{4}-\d{2}-\d{2}", line):
+                            in_header = False
+                            body.append(line)
+                        else:
+                            header.append(line)
+                    else:
+                        body.append(line)
+                
+                body_text = "\n".join(body)
+                entries = re.findall(r"(?m)^- \*\*(\d{4}-\d{2}-\d{2})\*\*: (.*?(?=\n- \*\*|\Z))", body_text, re.DOTALL)
+                if entries:
+                    sorted_entries = sorted(entries, key=lambda x: x[0], reverse=True)
+                    new_body = []
+                    for date, content in sorted_entries:
+                        new_body.append(f"- **{date}**: {content.strip()}\n")
+                    text = "\n".join(header) + "\n\n" + "\n".join(new_body)
+
             (topic_dir / file).write_text(text, encoding="utf-8")
 
     print(f"新トピックファイルを生成しました: {topic_dir}")
