@@ -23,7 +23,6 @@ def fetch_url_content(url):
 
 def process_submission():
     slug = os.environ.get("TOPIC_SLUG")
-    info_type = os.environ.get("INFO_TYPE", "未分類")
     news_url = os.environ.get("NEWS_URL", "")
     comment = os.environ.get("USER_COMMENT", "")
     
@@ -31,13 +30,17 @@ def process_submission():
         print("Error: TOPIC_SLUG and NEWS_URL are required.")
         sys.exit(1)
         
-    md_path = f"topics/{slug}/content.md"
-    if not os.path.exists(md_path):
-        print(f"Error: Topic file not found at {md_path}")
+    facts_path = f"topics/{slug}/facts.md"
+    timeline_path = f"topics/{slug}/timeline.md"
+    
+    if not os.path.exists(facts_path) or not os.path.exists(timeline_path):
+        print(f"Error: Topic files not found for {slug}")
         sys.exit(1)
         
-    with open(md_path, 'r', encoding='utf-8') as f:
-        current_md = f.read()
+    with open(facts_path, 'r', encoding='utf-8') as f:
+        current_facts = f.read()
+    with open(timeline_path, 'r', encoding='utf-8') as f:
+        current_timeline = f.read()
         
     print(f"Fetching content from: {news_url}")
     url_content = fetch_url_content(news_url)
@@ -47,38 +50,45 @@ def process_submission():
         raise ValueError("GEMINI_API_KEY is not set.")
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-3.5-flash')
-    prompt = f"""あなたは客観的で中立な「論点の現在地」の編集者です。
-現在、以下のMarkdown形式のトピック記事があります。
+    prompt = f"""あなたは客観的で中立な「論点の現在地」のファクトチェッカー・編集者です。
+現在、以下の2つのMarkdown記事（ファクトリストとタイムライン）があります。
 
-【現在の記事】
+【現在の記事 (facts.md)】
 ```markdown
-{current_md}
+{current_facts}
 ```
 
-読者から、このトピックに関して新しい情報提供がありました。
+【現在の記事 (timeline.md)】
+```markdown
+{current_timeline}
+```
+
+読者から、この記事の情報の裏付け、または修正に関する情報提供がありました。
 
 【ユーザーからの提供情報】
-- 情報の種類: {info_type}
+- 報告の目的・コメント: {comment}
 - URL: {news_url}
-- 補足コメント: {comment}
 
 【URLの内容（抜粋）】
 {url_content}
 
 指示:
-この新しい情報（URLの内容）を評価し、信頼できる一次情報または大手報道機関のものであれば、現在の記事の適切なセクション（タイムライン、関連する事実とデータ、政党・団体のスタンスなど）に追記してください。
-- 追記する際は、客観的な事実のみを記載し、出典として提供されたURLをリンクしてください。
+この情報（URLの内容）を評価し、既存のファクトやタイムラインの出来事の裏付けが取れたか、あるいは修正が必要かを判定してください。
+- 裏付けが取れた場合、該当箇所の `[status:unverified]` を `[status:verified]` に変更してください。必要に応じて、提供されたURLを出典として末尾に追記してください。
+- ユーザーから修正提案があり、URLの内容がそれを裏付ける信頼できる情報（大手報道機関や公的機関）であれば、記述を客観的な事実に修正した上で `[status:verified]` にしてください。
+- 全く無関係なスパムや、信頼できないソースの場合はMarkdownを変更しないでください。
 
 【出力フォーマット】
 以下のJSONフォーマットで出力してください。装飾やJSON以外のテキストは含めないでください。
-{
-  "summary": "ニュースの内容の要約と、今回どこをどのように修正・追記したかの詳細な説明",
-  "updated_markdown": "修正後の完全なMarkdownテキスト"
-}
+{{
+  "summary": "管理人に向けた検証結果の報告（PRのコメントとして表示されます）。『提供されたURLを確認した結果、事実リストの○○という記載の裏付けが取れたため、検証済ステータスに変更しました。』など。",
+  "updated_facts_md": "修正後の完全な facts.md のテキスト（変更がない場合は元のテキストをそのまま出力）",
+  "updated_timeline_md": "修正後の完全な timeline.md のテキスト（変更がない場合は元のテキストをそのまま出力）"
+}}
 
 【絶対ルール】
 1. 「AIがまとめました」「私が提案します」などのAI自身についての言及や挨拶は一切含めないこと。
-2. 文章は「だ・である調」で知的なトーンを維持すること。ただし、高校三年生（18歳）が読んでスムーズに理解できるよう、官公庁や法律の特有の難解な熟語（例：「乏しい」「属し」など）は使用を禁止し、簡潔で明瞭な平易な言葉に翻訳して記載すること。
+2. 文章は「だ・である調」で知的なトーンを維持すること。ただし、高校三年生（18歳）が読んでスムーズに理解できるよう、官公庁や法律の特有の難解な熟語は使用を禁止し、平易な言葉に翻訳して記載すること。
 """
     print("Sending to Gemini...")
     response = model.generate_content(
@@ -98,20 +108,24 @@ def process_submission():
     import json
     try:
         output_data = json.loads(result_text.strip())
-        new_md = output_data.get("updated_markdown", current_md)
+        new_facts = output_data.get("updated_facts_md", current_facts)
+        new_timeline = output_data.get("updated_timeline_md", current_timeline)
         summary = output_data.get("summary", "要約の生成に失敗しました。")
     except json.JSONDecodeError:
         print("Failed to parse JSON response.")
-        new_md = current_md
+        new_facts = current_facts
+        new_timeline = current_timeline
         summary = "AIからの応答が正しいJSON形式ではありませんでした。"
     
-    with open(md_path, 'w', encoding='utf-8') as f:
-        f.write(new_md)
+    with open(facts_path, 'w', encoding='utf-8') as f:
+        f.write(new_facts)
+    with open(timeline_path, 'w', encoding='utf-8') as f:
+        f.write(new_timeline)
         
     with open("summary.txt", 'w', encoding='utf-8') as f:
         f.write(summary)
         
-    print(f"Successfully updated {md_path} and created summary.txt")
+    print(f"Successfully updated files and created summary.txt")
 
 if __name__ == "__main__":
     process_submission()

@@ -17,6 +17,10 @@ import sys
 import time
 from pathlib import Path
 from datetime import datetime, timezone
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
 
 # ==============================
 # Gemini 設定
@@ -147,7 +151,8 @@ def load_topic_state(topic_dir: str) -> dict[str, str]:
 def filter_relevant_documents(
     topic: dict,
     documents: list[dict],
-    model: genai.GenerativeModel,
+    model_instance: any,
+    is_openai: bool = False
 ) -> list[dict]:
     """安価なモデルで関連性をバッチ判定し、関連するドキュメントのみ返す"""
     relevant = []
@@ -207,16 +212,27 @@ def filter_relevant_documents(
 """
 
         try:
-            # 1分あたり15リクエストの無料枠制限を回避するため、リクエスト間にスリープを挟む
             time.sleep(2)
-            response = model.generate_content(
-                prompt,
-                generation_config=genai.GenerationConfig(
-                    response_mime_type="application/json",
+            if is_openai:
+                client, model_name = model_instance
+                response = client.chat.completions.create(
+                    model=model_name,
+                    messages=[{"role": "user", "content": prompt}],
                     temperature=0.1,
-                ),
-            )
-            result = json.loads(response.text)
+                    response_format={"type": "json_object"}
+                )
+                result_text = response.choices[0].message.content
+            else:
+                response = model_instance.generate_content(
+                    prompt,
+                    generation_config=genai.GenerationConfig(
+                        response_mime_type="application/json",
+                        temperature=0.1,
+                    ),
+                )
+                result_text = response.text
+                
+            result = json.loads(result_text)
             relevant_ids = result.get("relevant_ids", [])
             for r_id in relevant_ids:
                 if 0 <= r_id < len(batch):
@@ -355,7 +371,7 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
 
             source_text = _source_link(source_url, source_name)
             content_text = f"{title}: {desc}" if desc and desc != title else title
-            entry = f"- **{date_str}**: {content_text} ({source_text})\n"
+            entry = f"- **{date_str}**: [status:unverified] {content_text} ({source_text})\n"
 
             if title not in existing and content_text not in existing:
                 new_entries.append(entry)
@@ -415,7 +431,7 @@ def update_markdown_files(topic_dir: str, updates: dict) -> bool:
                 continue
 
             source_text = _source_link(source_url, source_name)
-            entry = f"- {stmt} ({source_text})\n"
+            entry = f"- [status:unverified] {stmt} ({source_text})\n"
 
             if stmt not in existing:
                 new_entries.append(entry)
@@ -541,7 +557,21 @@ def main():
             raise ValueError("GEMINI_API_KEY 環境変数が設定されていません")
 
         genai.configure(api_key=api_key)
-        relevance_model = genai.GenerativeModel(RELEVANCE_MODEL)
+        
+        # Groq等のOpenAI互換APIをRelevanceフィルタ用に使用するか判定
+        openai_api_key = os.environ.get("OPENAI_API_KEY")
+        openai_api_base = os.environ.get("OPENAI_API_BASE")
+        openai_model_name = os.environ.get("OPENAI_MODEL_NAME", "llama3-8b-8192")
+
+        if openai_api_key and OpenAI:
+            print(f"[INIT] OpenAI互換APIを使用します: {openai_model_name}")
+            relevance_client = OpenAI(api_key=openai_api_key, base_url=openai_api_base)
+            relevance_model = (relevance_client, openai_model_name)
+            is_openai_relevance = True
+        else:
+            relevance_model = genai.GenerativeModel(RELEVANCE_MODEL)
+            is_openai_relevance = False
+            
         extraction_model = genai.GenerativeModel(EXTRACTION_MODEL)
 
         # 収集済みドキュメントを読み込む
@@ -577,7 +607,7 @@ def main():
             print(f"  収集ドキュメント数: {len(docs)}")
 
             # Step 1: Relevance フィルタ
-            relevant = filter_relevant_documents(topic, docs, relevance_model)
+            relevant = filter_relevant_documents(topic, docs, relevance_model, is_openai=is_openai_relevance)
             print(f"  関連ドキュメント数: {len(relevant)}")
 
             if not relevant:

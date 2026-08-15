@@ -99,15 +99,30 @@ def fetch_rss(url: str, max_age_days: int = 14) -> list[dict]:
 # 国会議事録検索 API（国立国会図書館）
 # ==============================
 
-def fetch_kokkai_records(keyword: str, from_date: str) -> list[dict]:
+def extract_context(text: str, keyword: str, context_len: int = 300) -> str:
+    if not keyword or keyword not in text:
+        return text[:context_len * 2]
+    
+    idx = text.find(keyword)
+    start = max(0, idx - context_len)
+    end = min(len(text), idx + len(keyword) + context_len)
+    
+    snippet = text[start:end]
+    if start > 0:
+        snippet = "..." + snippet
+    if end < len(text):
+        snippet = snippet + "..."
+    return snippet
+
+def fetch_kokkai_records(keyword: str, from_date: str, max_results: int = 15) -> list[dict]:
     """
     国会議事録検索システム API でキーワード検索する。
-    from_date 以降の記録を全件取得する。
+    from_date 以降の記録を取得する（上限付き）。
     """
     results = []
     try:
         start_record = 1
-        while True:
+        while len(results) < max_results:
             resp = httpx.get(
                 "https://kokkai.ndl.go.jp/api/speech",
                 params={
@@ -127,13 +142,17 @@ def fetch_kokkai_records(keyword: str, from_date: str) -> list[dict]:
                 break
                 
             for record in records:
+                if len(results) >= max_results:
+                    break
                 meeting_url = record.get("meetingURL", "")
                 speech_url = record.get("speechURL", meeting_url)
                 date_str = record.get("date", "")
                 house = record.get("nameOfHouse", "")
                 committee = record.get("nameOfMeeting", "")
                 speaker = record.get("speaker", "")
-                speech = record.get("speech", "")[:2000]
+                
+                raw_speech = record.get("speech", "")
+                speech = extract_context(raw_speech, keyword)
 
                 title = f"【{house}】{committee} — {speaker}発言（{date_str}）"
 

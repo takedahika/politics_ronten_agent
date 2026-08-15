@@ -121,7 +121,16 @@ export default async function TopicPage({ params }: Props) {
         </nav>
 
         {/* 各セクション */}
-        {SECTIONS.map((section) => (
+        {SECTIONS.map((section) => {
+          let htmlContent = content[section.key as keyof typeof content] || "<p style='color:var(--text-muted);font-size:0.85rem'>情報収集中...</p>";
+          if (section.key === "facts" || section.key === "timeline") {
+            htmlContent = htmlContent
+              .replace(/\[status:unverified\]/g, '<span class="status-badge status-unverified">🟡 未検証</span>')
+              .replace(/\[status:verified\]/g, '<span class="status-badge status-verified">🟢 検証済</span>')
+              .replace(/<\/li>/g, ` <a href="https://docs.google.com/forms/d/e/1FAIpQLSdJURrMn60TCH3T7Wc4mzOncJf-R_yyWcZz_oIiWX2sASsAWQ/viewform?usp=pp_url&entry.643368226=${slug}" target="_blank" rel="noopener noreferrer" class="fact-action-link">[出典を補強 / 修正を提案]</a></li>`);
+          }
+
+          return (
           <section
             key={section.id}
             id={section.id}
@@ -134,19 +143,27 @@ export default async function TopicPage({ params }: Props) {
               />
               <h2 className="section-title" style={{ fontSize: "1.1rem", fontWeight: 600 }}>{section.label}</h2>
             </div>
+            
+            {section.id === "facts-claims" && (
+              <div className="fact-legend">
+                <strong>※ バッジについて</strong><br />
+                <span className="status-badge status-verified">🟢 検証済</span> 管理人（もしくは読者）が出典を確認したものです。<br />
+                <span className="status-badge status-unverified">🟡 未検証</span> AIが自動抽出した情報であり、裏付け資料を募集中のもの
+              </div>
+            )}
 
             {section.id === "timeline" ? (
-              <ExpandableHtml html={content[section.key as keyof typeof content] || "<p style='color:var(--text-muted);font-size:0.85rem'>情報収集中...</p>"} />
+              <ExpandableHtml html={htmlContent} />
             ) : (
               <div
                 className="md-content"
                 dangerouslySetInnerHTML={{
-                  __html: content[section.key as keyof typeof content] || "<p style='color:var(--text-muted);font-size:0.85rem'>情報収集中...</p>",
+                  __html: htmlContent,
                 }}
               />
             )}
           </section>
-        ))}
+        )})}
 
         {/* コミュニティからの情報提供 CTA */}
         <section className="topic-section" style={{ borderTop: "1px solid var(--border)", paddingTop: "2rem", paddingBottom: "2rem" }}>
