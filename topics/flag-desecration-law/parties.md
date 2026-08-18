@@ -10,3 +10,7 @@
   [出典: 立憲民主党](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH-hLlyoAwF7BCmFNueMVOGG77AAWjEe_s9nsr8Yjgc11yzrVkBQ--XrV_7-sKPUr6lQP05_iF2MZJVW6_xBhIvPuwOYfpvk1LTnXNh10cyAeCNHNLC9npO5VDPwN4tTcY=)
 - **自由民主党（石破茂前首相など一部議員）**: 国旗への敬意や愛国心は刑罰で強制すべきではなく、内心の自由や表現の自由の観点から法律による罰則化には慎重であるべきだという、党内の推進姿勢とは異なる慎重な立場を示している。
   ([出典](https://www.yomiuri.co.jp/politics/20260727-OYT1T50120/))
+- **国民民主党**: 国旗保護の基本認識や世論・地方議会の要請を重視して法案に賛成する立場。ただし、表現の自由や内心の自由、罪刑法定主義をめぐる懸念が存在することも認識している。
+  ([出典](https://kokkai.ndl.go.jp/txt/122114889X02020260716/190))
+- **参政党**: 国旗を国民統合の象徴として重視し、自党が国旗汚損の被害を受けた当事者であることからも、公然たる冒涜を規制する法整備を強く推進する立場。表現の自由は尊重しつつも、無制限な冒涜は許容されないと主張する。
+  ([出典](https://kokkai.ndl.go.jp/txt/122114889X02020260716/192))
