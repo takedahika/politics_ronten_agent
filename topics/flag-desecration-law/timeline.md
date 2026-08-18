@@ -15,6 +15,8 @@
 - **2026-07-17**: [status:unverified] 参議院本会議において、自民、日本維新の会、国民民主、参政の4党などの賛成多数により「国旗の損壊等の処罰に関する法律案」が可決、成立。
   [出典: 参議院](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF4wWdRMmqoP0tZJmzDR4bUVI4R53cW4HCDhRrkR4F3Jy5UKLkaNy09Mpm1-XyfVximsqG9zUi0OW3t1CyaUiYkd5swDeFoIHdzOZ46bvJXHlqdKEmjJQgiaqObaTtn1654fWgbVhr9MokHngNhujKr5dMmT3CE8AdM_30RQFaPzLJP)
 
+- **2026-07-16**: [status:unverified] 参議院内閣委員会で国旗損壊処罰法案に対する附帯決議案が提出、賛成討論が行われる: 参議院内閣委員会において、自民、立憲、国民、公明、維新、参政の各会派共同提案による附帯決議案が提出された。また、国民民主党や参政党の議員による賛成討論が行われ、それぞれの立場から法案の必要性や表現の自由への配慮が述べられた。 ([出典](https://kokkai.ndl.go.jp/txt/122114889X02020260716/197))
+
 - **2026-07-14**: [status:unverified] 参議院内閣委員会において、参考人質疑が行われ、憲法学者や法学者らが法案の違憲性や妥当性について意見を陳述。
   [出典: 日本テレビ](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFEQLBJJ2wrTpmCavUsoWhVGHdlV3adeDHBnJj7eyTQjqmH01Xo6cAi4E95cUqFXfKGIF26WFlvUPbSII2UJmcePuHnGRP50HgvGaOzt2Gl97pDO2qkyMeydd2POnKeyiSo)
 
