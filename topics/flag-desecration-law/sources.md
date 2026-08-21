@@ -8,3 +8,6 @@
 - [朝日新聞](https://www.asahi.com/articles/AS7ST4G6S7STUTIL001M.html) `news` — 取得日: 2026年08月13日
 - [読売新聞](https://www.yomiuri.co.jp/politics/20260727-OYT1T50120/) `news` — 取得日: 2026年08月13日
 - [朝日新聞](https://www.asahi.com/articles/AS8444G6S844UTIL002M.html) `news` — 取得日: 2026年08月13日
+- [参議院内閣委員会 堂込麻紀子発言（2026-07-16）](https://kokkai.ndl.go.jp/txt/122114889X02020260716/190) `government` — 取得日: 2026年08月21日
+- [参議院内閣委員会 大津力発言（2026-07-16）](https://kokkai.ndl.go.jp/txt/122114889X02020260716/192) `government` — 取得日: 2026年08月21日
+- [参議院内閣委員会 鬼木誠発言（2026-07-16）](https://kokkai.ndl.go.jp/txt/122114889X02020260716/197) `government` — 取得日: 2026年08月21日
